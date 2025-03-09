@@ -115,6 +115,10 @@ class Bot(commands.Bot):
                 'current_user': f"{self.current_user_1}",
                 'user_number': "1"})
             if self.tts_enabled_1:
+                # Emit event to show speech processing visualization
+                socketio.emit('processing_tts',
+                    {'message': f"{message.content}",
+                     'user_number': "1"})
                 self.tts_manager.text_to_audio(message.content, "1")
         elif message.author.name == self.current_user_2:
             socketio.emit('message_send',
@@ -122,6 +126,10 @@ class Bot(commands.Bot):
                 'current_user': f"{self.current_user_2}",
                 'user_number': "2"})
             if self.tts_enabled_2:
+                # Emit event to show speech processing visualization
+                socketio.emit('processing_tts',
+                    {'message': f"{message.content}",
+                     'user_number': "2"})
                 self.tts_manager.text_to_audio(message.content, "2")
         elif message.author.name == self.current_user_3:
             socketio.emit('message_send',
@@ -129,6 +137,10 @@ class Bot(commands.Bot):
                 'current_user': f"{self.current_user_3}",
                 'user_number': "3"})
             if self.tts_enabled_3:
+                # Emit event to show speech processing visualization
+                socketio.emit('processing_tts',
+                    {'message': f"{message.content}",
+                     'user_number': "3"})
                 self.tts_manager.text_to_audio(message.content, "3")
 
         # Add this chatter to the user_pool

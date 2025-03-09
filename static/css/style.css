@@ -136,6 +136,7 @@ form {
 	margin: 10px;
 	background-color: rgba(0, 0, 0, 0.2);
 	border-radius: 15px;
+	min-height: 513px;
 }
 
 .player-controls {
