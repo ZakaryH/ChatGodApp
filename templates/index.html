@@ -109,13 +109,30 @@
 					});
 				}
 			});
+
+			function changeTheme(theme) {
+				if (theme === "default") {
+					document.body.style.backgroundColor = "#29d";
+				} else if (theme === "dark") {
+					document.body.style.backgroundColor = "#111";
+				} else if (theme === "transparent") {
+					document.body.style.backgroundColor = "transparent";
+				}
+			}
 		</script>
 	</head>
 	<body>
 		<div class="container">
-			<h1 style="margin-bottom: 10px">Holy Chat God Selector</h1>
-			<div style="display: flex; flex-direction: row">
-				<div>
+			<h1>Holy Chat God Selector</h1>
+			<div class="toggle-container">
+				<select onchange="changeTheme(this.value)">
+					<option value="default">Default</option>
+					<option value="dark">Dark</option>
+					<option value="transparent">Transparent</option>
+				</select>
+			</div>
+			<div class="main-container">
+				<div class="player-container">
 					<form id="pickrandom1" method="POST" action="#">
 						<input
 							type="submit"
@@ -173,10 +190,7 @@
 					</div>
 				</div>
 
-				<!-- 3 Player Distance -->
-				<div style="width: 87px"></div>
-
-				<div>
+				<div class="player-container">
 					<form id="pickrandom2" method="POST" action="#">
 						<input
 							type="submit"
@@ -234,10 +248,7 @@
 					</div>
 				</div>
 
-				<!-- 3 Player Distance -->
-				<div style="width: 87px"></div>
-
-				<div>
+				<div class="player-container">
 					<form id="pickrandom3" method="POST" action="#">
 						<input
 							type="submit"
