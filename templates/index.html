@@ -52,7 +52,72 @@
 				// Initialize avatar styles based on selected voice styles
 				for (let i = 1; i <= 3; i++) {
 					const voiceStyle = $(`#voicestyle${i}`).val();
-					updateAvatarStyle(i.toString(), voiceStyle);
+
+					// Apply styling based on voice style
+					const avatar = $(`#avatar-${i}`);
+					const container = $(`#avatar-container-${i}`);
+
+					// Reset any previous styling
+					container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+
+					// Apply styling based on voice style
+					switch (voiceStyle) {
+						case "angry":
+							container.css("box-shadow", "0 0 15px rgba(255, 99, 71, 0.8)");
+							avatar.css("filter", "hue-rotate(-40deg) saturate(1.5)");
+							break;
+						case "cheerful":
+							container.css("box-shadow", "0 0 15px rgba(255, 215, 0, 0.8)");
+							avatar.css("filter", "brightness(1.2) saturate(1.2)");
+							break;
+						case "excited":
+							container.css("box-shadow", "0 0 15px rgba(124, 252, 0, 0.8)");
+							avatar.css("filter", "brightness(1.3) saturate(1.3)");
+							break;
+						case "sad":
+							container.css("box-shadow", "0 0 15px rgba(70, 130, 180, 0.8)");
+							avatar.css("filter", "brightness(0.8) saturate(0.8)");
+							break;
+						case "terrified":
+							container.css("box-shadow", "0 0 15px rgba(148, 0, 211, 0.8)");
+							avatar.css("filter", "hue-rotate(90deg) brightness(0.9)");
+							break;
+						case "whispering":
+							container.css("box-shadow", "0 0 15px rgba(255, 255, 255, 0.5)");
+							avatar.css("filter", "brightness(0.7) contrast(0.9)");
+							break;
+						case "unfriendly":
+							container.css("box-shadow", "0 0 15px rgba(165, 42, 42, 0.8)");
+							avatar.css("filter", "sepia(0.5) saturate(1.3)");
+							break;
+						case "shouting":
+							container.css("box-shadow", "0 0 15px rgba(255, 69, 0, 0.8)");
+							avatar.css("filter", "contrast(1.4) brightness(1.2)");
+							break;
+						case "hopeful":
+							container.css("box-shadow", "0 0 15px rgba(0, 191, 255, 0.8)");
+							avatar.css("filter", "brightness(1.1) contrast(1.1)");
+							break;
+						case "random":
+						default:
+							avatar.css("filter", "none");
+							container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+							break;
+					}
+
+					// Initial subtle animation on page load for each avatar
+					setTimeout(() => {
+						// Animation for welcome effect
+						container.addClass("avatar-animate");
+
+						// Also add subtle avatar image wiggle
+						avatar.css("transform", "translateY(-5px)");
+
+						// Reset avatar position after animation
+						setTimeout(() => {
+							avatar.css("transform", "translateY(0)");
+						}, 700);
+					}, i * 500); // Stagger the animations
 				}
 
 				// Function to animate avatar when a new message is received
@@ -140,8 +205,63 @@
 							voice_style: voiceStyle,
 						});
 
-						// Update avatar styling based on voice style
-						updateAvatarStyle(userNum.toString(), voiceStyle);
+						// Update avatar styling based on voice style - use the direct implementation
+						const avatar = $(`#avatar-${userNum}`);
+						const container = $(`#avatar-container-${userNum}`);
+
+						// Reset any previous styling
+						container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+
+						// Apply styling based on voice style
+						switch (voiceStyle) {
+							case "angry":
+								container.css("box-shadow", "0 0 15px rgba(255, 99, 71, 0.8)");
+								avatar.css("filter", "hue-rotate(-40deg) saturate(1.5)");
+								break;
+							case "cheerful":
+								container.css("box-shadow", "0 0 15px rgba(255, 215, 0, 0.8)");
+								avatar.css("filter", "brightness(1.2) saturate(1.2)");
+								break;
+							case "excited":
+								container.css("box-shadow", "0 0 15px rgba(124, 252, 0, 0.8)");
+								avatar.css("filter", "brightness(1.3) saturate(1.3)");
+								break;
+							case "sad":
+								container.css("box-shadow", "0 0 15px rgba(70, 130, 180, 0.8)");
+								avatar.css("filter", "brightness(0.8) saturate(0.8)");
+								break;
+							case "terrified":
+								container.css("box-shadow", "0 0 15px rgba(148, 0, 211, 0.8)");
+								avatar.css("filter", "hue-rotate(90deg) brightness(0.9)");
+								break;
+							case "whispering":
+								container.css(
+									"box-shadow",
+									"0 0 15px rgba(255, 255, 255, 0.5)"
+								);
+								avatar.css("filter", "brightness(0.7) contrast(0.9)");
+								break;
+							case "unfriendly":
+								container.css("box-shadow", "0 0 15px rgba(165, 42, 42, 0.8)");
+								avatar.css("filter", "sepia(0.5) saturate(1.3)");
+								break;
+							case "shouting":
+								container.css("box-shadow", "0 0 15px rgba(255, 69, 0, 0.8)");
+								avatar.css("filter", "contrast(1.4) brightness(1.2)");
+								break;
+							case "hopeful":
+								container.css("box-shadow", "0 0 15px rgba(0, 191, 255, 0.8)");
+								avatar.css("filter", "brightness(1.1) contrast(1.1)");
+								break;
+							case "random":
+							default:
+								avatar.css("filter", "none");
+								container.css(
+									"box-shadow",
+									"0 0 15px rgba(121, 241, 255, 0.6)"
+								);
+								break;
+						}
 					});
 				}
 
@@ -209,6 +329,486 @@
 					document.body.style.backgroundColor = "transparent";
 				}
 			}
+
+			// Test function for avatar animations - bypass websocket
+			function testAvatarAnimation(userNumber) {
+				// Get current voice style for the user
+				const voiceStyle = $(`#voicestyle${userNumber}`).val();
+
+				// Display what's being tested in the message area
+				$(`#user-message-${userNumber}`).text(
+					`Testing "${voiceStyle}" animation`
+				);
+				$(`#user-name-${userNumber}`).text(`Test User ${userNumber}`);
+
+				// Apply the style to the avatar
+				const avatar = $(`#avatar-${userNumber}`);
+				const container = $(`#avatar-container-${userNumber}`);
+
+				// Reset any previous styling
+				container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+
+				// Apply styling based on voice style
+				switch (voiceStyle) {
+					case "angry":
+						container.css("box-shadow", "0 0 15px rgba(255, 99, 71, 0.8)");
+						avatar.css("filter", "hue-rotate(-40deg) saturate(1.5)");
+						break;
+					case "cheerful":
+						container.css("box-shadow", "0 0 15px rgba(255, 215, 0, 0.8)");
+						avatar.css("filter", "brightness(1.2) saturate(1.2)");
+						break;
+					case "excited":
+						container.css("box-shadow", "0 0 15px rgba(124, 252, 0, 0.8)");
+						avatar.css("filter", "brightness(1.3) saturate(1.3)");
+						break;
+					case "sad":
+						container.css("box-shadow", "0 0 15px rgba(70, 130, 180, 0.8)");
+						avatar.css("filter", "brightness(0.8) saturate(0.8)");
+						break;
+					case "terrified":
+						container.css("box-shadow", "0 0 15px rgba(148, 0, 211, 0.8)");
+						avatar.css("filter", "hue-rotate(90deg) brightness(0.9)");
+						break;
+					case "whispering":
+						container.css("box-shadow", "0 0 15px rgba(255, 255, 255, 0.5)");
+						avatar.css("filter", "brightness(0.7) contrast(0.9)");
+						break;
+					case "unfriendly":
+						container.css("box-shadow", "0 0 15px rgba(165, 42, 42, 0.8)");
+						avatar.css("filter", "sepia(0.5) saturate(1.3)");
+						break;
+					case "shouting":
+						container.css("box-shadow", "0 0 15px rgba(255, 69, 0, 0.8)");
+						avatar.css("filter", "contrast(1.4) brightness(1.2)");
+						break;
+					case "hopeful":
+						container.css("box-shadow", "0 0 15px rgba(0, 191, 255, 0.8)");
+						avatar.css("filter", "brightness(1.1) contrast(1.1)");
+						break;
+					case "random":
+					default:
+						avatar.css("filter", "none");
+						container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+						break;
+				}
+
+				// Remove animation class if it exists
+				container.removeClass("avatar-animate");
+
+				// Force DOM reflow to restart animation
+				void container[0].offsetWidth;
+
+				// Add animation class
+				container.addClass("avatar-animate");
+
+				// Also add subtle avatar image wiggle
+				avatar.css("transform", "translateY(-5px)");
+
+				// Reset avatar position after animation
+				setTimeout(function () {
+					avatar.css("transform", "translateY(0)");
+				}, 700);
+
+				// Apply textfill to adjust text sizes
+				for (let i = 1; i <= 3; i++) {
+					$("#user-name-box-" + i).textfill({
+						minFontPixels: 2,
+						maxFontPixels: 50,
+						explicitHeight: 60,
+					});
+					$("#user-message-box-" + i).textfill({
+						minFontPixels: 2,
+						maxFontPixels: 30,
+					});
+				}
+			}
+
+			// Test all avatars in sequence
+			function testAllAvatars() {
+				// Start with player 1
+				testAvatarAnimation("1");
+
+				// Then player 2 after a delay
+				setTimeout(function () {
+					testAvatarAnimation("2");
+				}, 1000);
+
+				// Finally player 3 after another delay
+				setTimeout(function () {
+					testAvatarAnimation("3");
+				}, 2000);
+			}
+
+			// Test a specific voice style on the selected player
+			function testStyle(voiceStyle) {
+				// Get the selected player
+				const playerNumber = $("#test-player-select").val();
+
+				// Update the voice style dropdown for that player to display what's being tested
+				$(`#voicestyle${playerNumber}`).val(voiceStyle);
+
+				// Display a test message describing the style
+				$(`#user-message-${playerNumber}`).text(
+					`Testing "${voiceStyle}" style`
+				);
+				$(`#user-name-${playerNumber}`).text(`Test User ${playerNumber}`);
+
+				// Apply the style to the avatar
+				const avatar = $(`#avatar-${playerNumber}`);
+				const container = $(`#avatar-container-${playerNumber}`);
+
+				// Reset any previous styling
+				container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+
+				// Apply styling based on voice style
+				switch (voiceStyle) {
+					case "angry":
+						container.css("box-shadow", "0 0 15px rgba(255, 99, 71, 0.8)");
+						avatar.css("filter", "hue-rotate(-40deg) saturate(1.5)");
+						break;
+					case "cheerful":
+						container.css("box-shadow", "0 0 15px rgba(255, 215, 0, 0.8)");
+						avatar.css("filter", "brightness(1.2) saturate(1.2)");
+						break;
+					case "excited":
+						container.css("box-shadow", "0 0 15px rgba(124, 252, 0, 0.8)");
+						avatar.css("filter", "brightness(1.3) saturate(1.3)");
+						break;
+					case "sad":
+						container.css("box-shadow", "0 0 15px rgba(70, 130, 180, 0.8)");
+						avatar.css("filter", "brightness(0.8) saturate(0.8)");
+						break;
+					case "terrified":
+						container.css("box-shadow", "0 0 15px rgba(148, 0, 211, 0.8)");
+						avatar.css("filter", "hue-rotate(90deg) brightness(0.9)");
+						break;
+					case "whispering":
+						container.css("box-shadow", "0 0 15px rgba(255, 255, 255, 0.5)");
+						avatar.css("filter", "brightness(0.7) contrast(0.9)");
+						break;
+					case "unfriendly":
+						container.css("box-shadow", "0 0 15px rgba(165, 42, 42, 0.8)");
+						avatar.css("filter", "sepia(0.5) saturate(1.3)");
+						break;
+					case "shouting":
+						container.css("box-shadow", "0 0 15px rgba(255, 69, 0, 0.8)");
+						avatar.css("filter", "contrast(1.4) brightness(1.2)");
+						break;
+					case "hopeful":
+						container.css("box-shadow", "0 0 15px rgba(0, 191, 255, 0.8)");
+						avatar.css("filter", "brightness(1.1) contrast(1.1)");
+						break;
+					case "random":
+					default:
+						avatar.css("filter", "none");
+						container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+						break;
+				}
+
+				// Trigger the animation
+				container.removeClass("avatar-animate");
+				void container[0].offsetWidth;
+				container.addClass("avatar-animate");
+
+				// Also add subtle avatar image wiggle
+				avatar.css("transform", "translateY(-5px)");
+
+				// Reset avatar position after animation
+				setTimeout(function () {
+					avatar.css("transform", "translateY(0)");
+				}, 700);
+
+				// Apply textfill to adjust text sizes
+				for (let i = 1; i <= 3; i++) {
+					$("#user-name-box-" + i).textfill({
+						minFontPixels: 2,
+						maxFontPixels: 50,
+						explicitHeight: 60,
+					});
+					$("#user-message-box-" + i).textfill({
+						minFontPixels: 2,
+						maxFontPixels: 30,
+					});
+				}
+			}
+
+			// Test all voice styles in sequence on the selected player
+			function testAllStyles() {
+				const playerNumber = $("#test-player-select").val();
+				const styles = [
+					"angry",
+					"cheerful",
+					"excited",
+					"sad",
+					"terrified",
+					"whispering",
+					"shouting",
+					"hopeful",
+					"unfriendly",
+					"random",
+				];
+
+				// Set a counter message
+				$(`#user-name-${playerNumber}`).text(`Testing All Styles`);
+				$(`#user-message-${playerNumber}`).text(`Starting style tests...`);
+
+				// Loop through all styles with delay
+				styles.forEach((style, index) => {
+					setTimeout(() => {
+						// Update the message
+						$(`#user-message-${playerNumber}`).text(
+							`Testing "${style}" style (${index + 1}/${styles.length})`
+						);
+
+						// Update the dropdown to show what's being tested
+						$(`#voicestyle${playerNumber}`).val(style);
+
+						// Get avatar elements
+						const avatar = $(`#avatar-${playerNumber}`);
+						const container = $(`#avatar-container-${playerNumber}`);
+
+						// Reset styling
+						container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+
+						// Apply new styling based on current style
+						switch (style) {
+							case "angry":
+								container.css("box-shadow", "0 0 15px rgba(255, 99, 71, 0.8)");
+								avatar.css("filter", "hue-rotate(-40deg) saturate(1.5)");
+								break;
+							case "cheerful":
+								container.css("box-shadow", "0 0 15px rgba(255, 215, 0, 0.8)");
+								avatar.css("filter", "brightness(1.2) saturate(1.2)");
+								break;
+							case "excited":
+								container.css("box-shadow", "0 0 15px rgba(124, 252, 0, 0.8)");
+								avatar.css("filter", "brightness(1.3) saturate(1.3)");
+								break;
+							case "sad":
+								container.css("box-shadow", "0 0 15px rgba(70, 130, 180, 0.8)");
+								avatar.css("filter", "brightness(0.8) saturate(0.8)");
+								break;
+							case "terrified":
+								container.css("box-shadow", "0 0 15px rgba(148, 0, 211, 0.8)");
+								avatar.css("filter", "hue-rotate(90deg) brightness(0.9)");
+								break;
+							case "whispering":
+								container.css(
+									"box-shadow",
+									"0 0 15px rgba(255, 255, 255, 0.5)"
+								);
+								avatar.css("filter", "brightness(0.7) contrast(0.9)");
+								break;
+							case "unfriendly":
+								container.css("box-shadow", "0 0 15px rgba(165, 42, 42, 0.8)");
+								avatar.css("filter", "sepia(0.5) saturate(1.3)");
+								break;
+							case "shouting":
+								container.css("box-shadow", "0 0 15px rgba(255, 69, 0, 0.8)");
+								avatar.css("filter", "contrast(1.4) brightness(1.2)");
+								break;
+							case "hopeful":
+								container.css("box-shadow", "0 0 15px rgba(0, 191, 255, 0.8)");
+								avatar.css("filter", "brightness(1.1) contrast(1.1)");
+								break;
+							case "random":
+							default:
+								avatar.css("filter", "none");
+								container.css(
+									"box-shadow",
+									"0 0 15px rgba(121, 241, 255, 0.6)"
+								);
+								break;
+						}
+
+						// Animate the avatar
+						container.removeClass("avatar-animate");
+						void container[0].offsetWidth;
+						container.addClass("avatar-animate");
+
+						// Add subtle wiggle
+						avatar.css("transform", "translateY(-5px)");
+						setTimeout(() => {
+							avatar.css("transform", "translateY(0)");
+						}, 700);
+
+						// Apply textfill
+						for (let i = 1; i <= 3; i++) {
+							$("#user-name-box-" + i).textfill({
+								minFontPixels: 2,
+								maxFontPixels: 50,
+								explicitHeight: 60,
+							});
+							$("#user-message-box-" + i).textfill({
+								minFontPixels: 2,
+								maxFontPixels: 30,
+							});
+						}
+					}, index * 1200); // 1.2 seconds between each style
+				});
+			}
+
+			// Stress test - rapidly test different styles on all players
+			function stressTest() {
+				const styles = [
+					"angry",
+					"cheerful",
+					"excited",
+					"sad",
+					"terrified",
+					"whispering",
+					"shouting",
+					"hopeful",
+					"unfriendly",
+					"random",
+				];
+
+				// Display stress test message on all players
+				for (let i = 1; i <= 3; i++) {
+					$(`#user-name-${i}`).text(`Stress Test`);
+					$(`#user-message-${i}`).text(`Starting stress test...`);
+				}
+
+				// Number of animation cycles to run
+				const cycles = 5;
+
+				// Run multiple animation cycles
+				for (let cycle = 0; cycle < cycles; cycle++) {
+					// For each cycle, animate all players with random styles
+					for (let player = 1; player <= 3; player++) {
+						setTimeout(() => {
+							// Pick a random style
+							const randomStyle =
+								styles[Math.floor(Math.random() * styles.length)];
+
+							// Display what's happening
+							$(`#user-message-${player}`).text(
+								`Style: ${randomStyle} (${cycle + 1}/${cycles})`
+							);
+
+							// Update the dropdown to show what's being tested
+							$(`#voicestyle${player}`).val(randomStyle);
+
+							// Apply avatar styles directly
+							const avatar = $(`#avatar-${player}`);
+							const container = $(`#avatar-container-${player}`);
+
+							// Reset and apply new style
+							container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+
+							// Apply styling based on the random style
+							switch (randomStyle) {
+								case "angry":
+									container.css(
+										"box-shadow",
+										"0 0 15px rgba(255, 99, 71, 0.8)"
+									);
+									avatar.css("filter", "hue-rotate(-40deg) saturate(1.5)");
+									break;
+								case "cheerful":
+									container.css(
+										"box-shadow",
+										"0 0 15px rgba(255, 215, 0, 0.8)"
+									);
+									avatar.css("filter", "brightness(1.2) saturate(1.2)");
+									break;
+								case "excited":
+									container.css(
+										"box-shadow",
+										"0 0 15px rgba(124, 252, 0, 0.8)"
+									);
+									avatar.css("filter", "brightness(1.3) saturate(1.3)");
+									break;
+								case "sad":
+									container.css(
+										"box-shadow",
+										"0 0 15px rgba(70, 130, 180, 0.8)"
+									);
+									avatar.css("filter", "brightness(0.8) saturate(0.8)");
+									break;
+								case "terrified":
+									container.css(
+										"box-shadow",
+										"0 0 15px rgba(148, 0, 211, 0.8)"
+									);
+									avatar.css("filter", "hue-rotate(90deg) brightness(0.9)");
+									break;
+								case "whispering":
+									container.css(
+										"box-shadow",
+										"0 0 15px rgba(255, 255, 255, 0.5)"
+									);
+									avatar.css("filter", "brightness(0.7) contrast(0.9)");
+									break;
+								case "unfriendly":
+									container.css(
+										"box-shadow",
+										"0 0 15px rgba(165, 42, 42, 0.8)"
+									);
+									avatar.css("filter", "sepia(0.5) saturate(1.3)");
+									break;
+								case "shouting":
+									container.css("box-shadow", "0 0 15px rgba(255, 69, 0, 0.8)");
+									avatar.css("filter", "contrast(1.4) brightness(1.2)");
+									break;
+								case "hopeful":
+									container.css(
+										"box-shadow",
+										"0 0 15px rgba(0, 191, 255, 0.8)"
+									);
+									avatar.css("filter", "brightness(1.1) contrast(1.1)");
+									break;
+								case "random":
+								default:
+									avatar.css("filter", "none");
+									container.css(
+										"box-shadow",
+										"0 0 15px rgba(121, 241, 255, 0.6)"
+									);
+									break;
+							}
+
+							// Animate the avatar
+							container.removeClass("avatar-animate");
+							void container[0].offsetWidth;
+							container.addClass("avatar-animate");
+
+							avatar.css("transform", "translateY(-5px)");
+							setTimeout(() => {
+								avatar.css("transform", "translateY(0)");
+							}, 400);
+
+							// Update text sizing
+							for (let i = 1; i <= 3; i++) {
+								$("#user-name-box-" + i).textfill({
+									minFontPixels: 2,
+									maxFontPixels: 50,
+									explicitHeight: 60,
+								});
+								$("#user-message-box-" + i).textfill({
+									minFontPixels: 2,
+									maxFontPixels: 30,
+								});
+							}
+						}, cycle * 1500 + player * 300); // Stagger players within each cycle
+					}
+				}
+			}
+
+			// Toggle the test panel visibility
+			function toggleTestPanel() {
+				const panel = $("#test-panel-content");
+				const toggle = $("#test-panel-toggle");
+
+				if (panel.is(":visible")) {
+					panel.slideUp();
+					toggle.text("▲");
+				} else {
+					panel.slideDown();
+					toggle.text("▼");
+				}
+			}
 		</script>
 	</head>
 	<body>
@@ -221,6 +821,268 @@
 					<option value="transparent">Transparent</option>
 				</select>
 			</div>
+
+			<!-- Animation Test Panel -->
+			<div
+				style="
+					background-color: rgba(0, 0, 0, 0.3);
+					padding: 15px;
+					border-radius: 10px;
+					margin-bottom: 20px;
+					text-align: center;
+				"
+			>
+				<h3 style="margin-top: 0; cursor: pointer" onclick="toggleTestPanel()">
+					Avatar Animation Test Panel
+					<span
+						id="test-panel-toggle"
+						style="font-size: 0.8em; margin-left: 10px"
+						>▲</span
+					>
+				</h3>
+
+				<div id="test-panel-content" style="display: none">
+					<p>Test animations without WebSocket messages</p>
+					<div
+						style="
+							display: flex;
+							justify-content: space-around;
+							margin-top: 10px;
+						"
+					>
+						<button
+							onclick="testAvatarAnimation('1')"
+							style="
+								background-color: #4fd1c5;
+								color: white;
+								border: none;
+								padding: 8px 15px;
+								border-radius: 5px;
+								cursor: pointer;
+							"
+						>
+							Test Player 1
+						</button>
+						<button
+							onclick="testAvatarAnimation('2')"
+							style="
+								background-color: #9f7aea;
+								color: white;
+								border: none;
+								padding: 8px 15px;
+								border-radius: 5px;
+								cursor: pointer;
+							"
+						>
+							Test Player 2
+						</button>
+						<button
+							onclick="testAvatarAnimation('3')"
+							style="
+								background-color: #718096;
+								color: white;
+								border: none;
+								padding: 8px 15px;
+								border-radius: 5px;
+								cursor: pointer;
+							"
+						>
+							Test Player 3
+						</button>
+					</div>
+					<div style="margin-top: 10px">
+						<button
+							onclick="testAllAvatars()"
+							style="
+								background-color: #e53e3e;
+								color: white;
+								border: none;
+								padding: 8px 15px;
+								border-radius: 5px;
+								cursor: pointer;
+							"
+						>
+							Test All Avatars
+						</button>
+						<button
+							onclick="stressTest()"
+							style="
+								background-color: #dd6b20;
+								color: white;
+								border: none;
+								padding: 8px 15px;
+								border-radius: 5px;
+								cursor: pointer;
+								margin-left: 10px;
+							"
+						>
+							Stress Test
+						</button>
+					</div>
+
+					<!-- Voice Style Test -->
+					<div
+						style="
+							margin-top: 15px;
+							border-top: 1px solid rgba(255, 255, 255, 0.2);
+							padding-top: 15px;
+						"
+					>
+						<h4 style="margin-top: 0">Test Specific Voice Style</h4>
+						<div
+							style="
+								display: flex;
+								flex-wrap: wrap;
+								justify-content: center;
+								gap: 5px;
+								margin-top: 10px;
+							"
+						>
+							<select
+								id="test-player-select"
+								style="padding: 5px; border-radius: 5px; margin-right: 10px"
+							>
+								<option value="1">Player 1</option>
+								<option value="2">Player 2</option>
+								<option value="3">Player 3</option>
+							</select>
+							<button
+								onclick="testStyle('angry')"
+								style="
+									background-color: #e53e3e;
+									color: white;
+									border: none;
+									padding: 5px 10px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Angry
+							</button>
+							<button
+								onclick="testStyle('cheerful')"
+								style="
+									background-color: #f6ad55;
+									color: white;
+									border: none;
+									padding: 5px 10px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Cheerful
+							</button>
+							<button
+								onclick="testStyle('excited')"
+								style="
+									background-color: #68d391;
+									color: white;
+									border: none;
+									padding: 5px 10px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Excited
+							</button>
+							<button
+								onclick="testStyle('sad')"
+								style="
+									background-color: #4299e1;
+									color: white;
+									border: none;
+									padding: 5px 10px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Sad
+							</button>
+							<button
+								onclick="testStyle('terrified')"
+								style="
+									background-color: #9f7aea;
+									color: white;
+									border: none;
+									padding: 5px 10px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Terrified
+							</button>
+							<button
+								onclick="testStyle('whispering')"
+								style="
+									background-color: #a0aec0;
+									color: white;
+									border: none;
+									padding: 5px 10px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Whispering
+							</button>
+							<button
+								onclick="testStyle('shouting')"
+								style="
+									background-color: #dd6b20;
+									color: white;
+									border: none;
+									padding: 5px 10px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Shouting
+							</button>
+							<button
+								onclick="testStyle('hopeful')"
+								style="
+									background-color: #38b2ac;
+									color: white;
+									border: none;
+									padding: 5px 10px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Hopeful
+							</button>
+							<button
+								onclick="testStyle('unfriendly')"
+								style="
+									background-color: #822727;
+									color: white;
+									border: none;
+									padding: 5px 10px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Unfriendly
+							</button>
+						</div>
+						<div style="margin-top: 10px">
+							<button
+								onclick="testAllStyles()"
+								style="
+									background-color: #805ad5;
+									color: white;
+									border: none;
+									padding: 8px 15px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Test All Styles
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<div class="main-container">
 				<div class="player-container">
 					<div class="avatar-container" id="avatar-container-1">
