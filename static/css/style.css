@@ -86,3 +86,60 @@ form {
 	color: #79f1ff;
 	background-color: transparent;
 }
+
+/* Avatar styling */
+.avatar-container {
+	position: relative;
+	width: 120px;
+	height: 120px;
+	margin: 0 auto 15px auto;
+	border-radius: 50%;
+	overflow: hidden;
+	border: 3px solid #79f1ff;
+	box-shadow: 0 0 15px rgba(121, 241, 255, 0.6);
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.avatar {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.3s ease;
+}
+
+/* Animation classes for new messages */
+.avatar-animate {
+	animation: pulse 0.7s ease-in-out;
+}
+
+@keyframes pulse {
+	0% {
+		transform: scale(1);
+		box-shadow: 0 0 15px rgba(121, 241, 255, 0.6);
+	}
+	50% {
+		transform: scale(1.1);
+		box-shadow: 0 0 25px rgba(121, 241, 255, 0.8);
+	}
+	100% {
+		transform: scale(1);
+		box-shadow: 0 0 15px rgba(121, 241, 255, 0.6);
+	}
+}
+
+/* Adding a container for player information */
+.player-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20px;
+	margin: 10px;
+	background-color: rgba(0, 0, 0, 0.2);
+	border-radius: 15px;
+}
+
+.player-controls {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}

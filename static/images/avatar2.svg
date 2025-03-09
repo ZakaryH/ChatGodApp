@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Background Circle -->
+  <circle cx="100" cy="100" r="100" fill="#553C9A"/>
+  
+  <!-- Alien Head -->
+  <ellipse cx="100" cy="90" rx="60" ry="70" fill="#9F7AEA"/>
+  
+  <!-- Eyes -->
+  <ellipse cx="75" cy="75" rx="20" ry="10" fill="#000"/>
+  <ellipse cx="125" cy="75" rx="20" ry="10" fill="#000"/>
+  <ellipse cx="75" cy="75" rx="7" ry="3" fill="#38B2AC"/>
+  <ellipse cx="125" cy="75" rx="7" ry="3" fill="#38B2AC"/>
+  
+  <!-- Mouth -->
+  <path d="M80,110 Q100,125 120,110" stroke="#2D3748" stroke-width="5" fill="none"/>
+  
+  <!-- Antennae -->
+  <line x1="80" y1="30" x2="90" y2="50" stroke="#B794F4" stroke-width="4"/>
+  <line x1="120" y1="30" x2="110" y2="50" stroke="#B794F4" stroke-width="4"/>
+  <circle cx="80" cy="25" r="7" fill="#D6BCFA"/>
+  <circle cx="120" cy="25" r="7" fill="#D6BCFA"/>
+  
+  <!-- Spots on Head -->
+  <circle cx="60" cy="90" r="8" fill="#805AD5"/>
+  <circle cx="140" cy="90" r="8" fill="#805AD5"/>
+  <circle cx="100" cy="40" r="8" fill="#805AD5"/>
+  
+  <!-- Cosmic Aura -->
+  <circle cx="100" cy="100" r="90" fill="none" stroke="#E9D8FD" stroke-width="2" stroke-dasharray="5,5"/>
+</svg> 

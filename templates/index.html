@@ -40,11 +40,43 @@
 						msg.current_user[0].toUpperCase() + msg.current_user.substr(1)
 					);
 
+					// Animate the avatar for the user receiving the message
+					animateAvatar(msg.user_number);
+
 					// Apply textfill to all user elements
 					applyTextFillToAllUsers();
 
 					if (cb) cb();
 				});
+
+				// Initialize avatar styles based on selected voice styles
+				for (let i = 1; i <= 3; i++) {
+					const voiceStyle = $(`#voicestyle${i}`).val();
+					updateAvatarStyle(i.toString(), voiceStyle);
+				}
+
+				// Function to animate avatar when a new message is received
+				function animateAvatar(userNumber) {
+					const avatarContainer = $(`#avatar-container-${userNumber}`);
+					const avatar = $(`#avatar-${userNumber}`);
+
+					// Remove animation class if it exists
+					avatarContainer.removeClass("avatar-animate");
+
+					// Force DOM reflow to restart animation
+					void avatarContainer[0].offsetWidth;
+
+					// Add animation class
+					avatarContainer.addClass("avatar-animate");
+
+					// Also add subtle avatar image wiggle
+					avatar.css("transform", "translateY(-5px)");
+
+					// Reset avatar position after animation
+					setTimeout(function () {
+						avatar.css("transform", "translateY(0)");
+					}, 700);
+				}
 
 				// Apply textfill to all user elements
 				function applyTextFillToAllUsers() {
@@ -102,11 +134,69 @@
 
 					// Voice style change event
 					$(`#voicestyle${userNum}`).change(function () {
+						const voiceStyle = $(this).val();
 						socket.emit("voicestyle", {
 							user_number: userNum.toString(),
-							voice_style: $(this).val(),
+							voice_style: voiceStyle,
 						});
+
+						// Update avatar styling based on voice style
+						updateAvatarStyle(userNum.toString(), voiceStyle);
 					});
+				}
+
+				// Function to update avatar styling based on voice style
+				function updateAvatarStyle(userNumber, voiceStyle) {
+					const avatar = $(`#avatar-${userNumber}`);
+					const container = $(`#avatar-container-${userNumber}`);
+
+					// Reset any previous styling
+					container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+
+					// Apply styling based on voice style
+					switch (voiceStyle) {
+						case "angry":
+							container.css("box-shadow", "0 0 15px rgba(255, 99, 71, 0.8)");
+							avatar.css("filter", "hue-rotate(-40deg) saturate(1.5)");
+							break;
+						case "cheerful":
+							container.css("box-shadow", "0 0 15px rgba(255, 215, 0, 0.8)");
+							avatar.css("filter", "brightness(1.2) saturate(1.2)");
+							break;
+						case "excited":
+							container.css("box-shadow", "0 0 15px rgba(124, 252, 0, 0.8)");
+							avatar.css("filter", "brightness(1.3) saturate(1.3)");
+							break;
+						case "sad":
+							container.css("box-shadow", "0 0 15px rgba(70, 130, 180, 0.8)");
+							avatar.css("filter", "brightness(0.8) saturate(0.8)");
+							break;
+						case "terrified":
+							container.css("box-shadow", "0 0 15px rgba(148, 0, 211, 0.8)");
+							avatar.css("filter", "hue-rotate(90deg) brightness(0.9)");
+							break;
+						case "whispering":
+							container.css("box-shadow", "0 0 15px rgba(255, 255, 255, 0.5)");
+							avatar.css("filter", "brightness(0.7) contrast(0.9)");
+							break;
+						case "unfriendly":
+							container.css("box-shadow", "0 0 15px rgba(165, 42, 42, 0.8)");
+							avatar.css("filter", "sepia(0.5) saturate(1.3)");
+							break;
+						case "shouting":
+							container.css("box-shadow", "0 0 15px rgba(255, 69, 0, 0.8)");
+							avatar.css("filter", "contrast(1.4) brightness(1.2)");
+							break;
+						case "hopeful":
+							container.css("box-shadow", "0 0 15px rgba(0, 191, 255, 0.8)");
+							avatar.css("filter", "brightness(1.1) contrast(1.1)");
+							break;
+						case "random":
+						default:
+							avatar.css("filter", "none");
+							container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+							break;
+					}
 				}
 			});
 
@@ -133,54 +223,70 @@
 			</div>
 			<div class="main-container">
 				<div class="player-container">
-					<form id="pickrandom1" method="POST" action="#">
-						<input
-							type="submit"
-							value="Pick Random"
-							id="pick-random-input"
-							style="border-color: #ccc; border-radius: 10px"
+					<div class="avatar-container" id="avatar-container-1">
+						<!-- <img
+							src="{{ url_for('static', filename='images/avatar1.svg') }}"
+							alt="Player 1 Avatar"
+							class="avatar"
+							id="avatar-1"
+						/> -->
+						<img
+							src="../static/images/avatar1.svg"
+							alt="Player 1 Avatar"
+							class="avatar"
+							id="avatar-1"
 						/>
-					</form>
-					<form id="tts1" method="POST" action="#">
-						<label for="tts">TTS 1:</label>
-						<input
-							id="checkbox1"
-							type="checkbox"
-							class="tts-checkbox"
-							style="text-align: left"
-							value="tts"
-							name="tts"
-							checked
-						/>
-					</form>
-					<br /><br />
-					<form id="choose1" class="choose-box" method="POST" action="#">
-						<label for="tts">Choose User:</label>
-						<input type="text" class="choose" />
-					</form>
-					<br /><br />
-					<select id="voicename1">
-						<option value="en-US-DavisNeural">Davis</option>
-						<option value="en-US-TonyNeural">Tony</option>
-						<option value="en-US-JasonNeural">Jason</option>
-						<option value="en-US-GuyNeural">Guy</option>
-						<option value="en-US-JaneNeural">Jane</option>
-						<option value="en-US-NancyNeural">Nancy</option>
-						<option value="en-US-JennyNeural">Jenny</option>
-						<option value="en-US-AriaNeural">Aria</option>
-					</select>
-					<select id="voicestyle1">
-						<option value="random">random</option>
-						<option value="angry">angry</option>
-						<option value="cheerful">cheerful</option>
-						<option value="excited">excited</option>
-						<option value="hopeful">hopeful</option>
-						<option value="sad">sad</option>
-						<option value="shouting">shouting</option>
-						<option value="terrified">terrified</option>
-						<option value="unfriendly">unfriendly</option>
-						<option value="whispering">whispering</option>
-					</select>
+					</div>
+					<div class="player-controls">
+						<form id="pickrandom1" method="POST" action="#">
+							<input
+								type="submit"
+								value="Pick Random"
+								id="pick-random-input"
+								style="border-color: #ccc; border-radius: 10px"
+							/>
+						</form>
+						<form id="tts1" method="POST" action="#">
+							<label for="tts">TTS 1:</label>
+							<input
+								id="checkbox1"
+								type="checkbox"
+								class="tts-checkbox"
+								style="text-align: left"
+								value="tts"
+								name="tts"
+								checked
+							/>
+						</form>
+						<br /><br />
+						<form id="choose1" class="choose-box" method="POST" action="#">
+							<label for="tts">Choose User:</label>
+							<input type="text" class="choose" />
+						</form>
+						<br /><br />
+						<select id="voicename1">
+							<option value="en-US-DavisNeural">Davis</option>
+							<option value="en-US-TonyNeural">Tony</option>
+							<option value="en-US-JasonNeural">Jason</option>
+							<option value="en-US-GuyNeural">Guy</option>
+							<option value="en-US-JaneNeural">Jane</option>
+							<option value="en-US-NancyNeural">Nancy</option>
+							<option value="en-US-JennyNeural">Jenny</option>
+							<option value="en-US-AriaNeural">Aria</option>
+						</select>
+						<select id="voicestyle1">
+							<option value="random">random</option>
+							<option value="angry">angry</option>
+							<option value="cheerful">cheerful</option>
+							<option value="excited">excited</option>
+							<option value="hopeful">hopeful</option>
+							<option value="sad">sad</option>
+							<option value="shouting">shouting</option>
+							<option value="terrified">terrified</option>
+							<option value="unfriendly">unfriendly</option>
+							<option value="whispering">whispering</option>
+						</select>
+					</div>
 					<br /><br />
 					<div class="user-name-box" id="user-name-box-1">
 						<span class="user-name" id="user-name-1">Temp User</span>
@@ -191,54 +297,70 @@
 				</div>
 
 				<div class="player-container">
-					<form id="pickrandom2" method="POST" action="#">
-						<input
-							type="submit"
-							value="Pick Random"
-							id="pick-random-input"
-							style="border-color: #ccc; border-radius: 10px"
+					<div class="avatar-container" id="avatar-container-2">
+						<!-- <img
+							src="{{ url_for('static', filename='images/avatar2.svg') }}"
+							alt="Player 2 Avatar"
+							class="avatar"
+							id="avatar-2"
+						/> -->
+						<img
+							src="../static/images/avatar2.svg"
+							alt="Player 2 Avatar"
+							class="avatar"
+							id="avatar-2"
 						/>
-					</form>
-					<form id="tts2" method="POST" action="#">
-						<label for="tts">TTS 2:</label>
-						<input
-							id="checkbox2"
-							type="checkbox"
-							class="tts-checkbox"
-							style="text-align: left"
-							value="tts"
-							name="tts"
-							checked
-						/>
-					</form>
-					<br /><br />
-					<form id="choose2" class="choose-box" method="POST" action="#">
-						<label for="tts">Choose User:</label>
-						<input type="text" class="choose" />
-					</form>
-					<br /><br />
-					<select id="voicename2">
-						<option value="en-US-DavisNeural">Davis</option>
-						<option value="en-US-TonyNeural">Tony</option>
-						<option value="en-US-JasonNeural">Jason</option>
-						<option value="en-US-GuyNeural">Guy</option>
-						<option value="en-US-JaneNeural">Jane</option>
-						<option value="en-US-NancyNeural">Nancy</option>
-						<option value="en-US-JennyNeural">Jenny</option>
-						<option value="en-US-AriaNeural">Aria</option>
-					</select>
-					<select id="voicestyle2">
-						<option value="random">random</option>
-						<option value="angry">angry</option>
-						<option value="cheerful">cheerful</option>
-						<option value="excited">excited</option>
-						<option value="hopeful">hopeful</option>
-						<option value="sad">sad</option>
-						<option value="shouting">shouting</option>
-						<option value="terrified">terrified</option>
-						<option value="unfriendly">unfriendly</option>
-						<option value="whispering">whispering</option>
-					</select>
+					</div>
+					<div class="player-controls">
+						<form id="pickrandom2" method="POST" action="#">
+							<input
+								type="submit"
+								value="Pick Random"
+								id="pick-random-input"
+								style="border-color: #ccc; border-radius: 10px"
+							/>
+						</form>
+						<form id="tts2" method="POST" action="#">
+							<label for="tts">TTS 2:</label>
+							<input
+								id="checkbox2"
+								type="checkbox"
+								class="tts-checkbox"
+								style="text-align: left"
+								value="tts"
+								name="tts"
+								checked
+							/>
+						</form>
+						<br /><br />
+						<form id="choose2" class="choose-box" method="POST" action="#">
+							<label for="tts">Choose User:</label>
+							<input type="text" class="choose" />
+						</form>
+						<br /><br />
+						<select id="voicename2">
+							<option value="en-US-DavisNeural">Davis</option>
+							<option value="en-US-TonyNeural">Tony</option>
+							<option value="en-US-JasonNeural">Jason</option>
+							<option value="en-US-GuyNeural">Guy</option>
+							<option value="en-US-JaneNeural">Jane</option>
+							<option value="en-US-NancyNeural">Nancy</option>
+							<option value="en-US-JennyNeural">Jenny</option>
+							<option value="en-US-AriaNeural">Aria</option>
+						</select>
+						<select id="voicestyle2">
+							<option value="random">random</option>
+							<option value="angry">angry</option>
+							<option value="cheerful">cheerful</option>
+							<option value="excited">excited</option>
+							<option value="hopeful">hopeful</option>
+							<option value="sad">sad</option>
+							<option value="shouting">shouting</option>
+							<option value="terrified">terrified</option>
+							<option value="unfriendly">unfriendly</option>
+							<option value="whispering">whispering</option>
+						</select>
+					</div>
 					<br /><br />
 					<div class="user-name-box" id="user-name-box-2">
 						<span class="user-name" id="user-name-2">Temp User</span>
@@ -249,54 +371,70 @@
 				</div>
 
 				<div class="player-container">
-					<form id="pickrandom3" method="POST" action="#">
-						<input
-							type="submit"
-							value="Pick Random"
-							id="pick-random-input"
-							style="border-color: #ccc; border-radius: 10px"
+					<div class="avatar-container" id="avatar-container-3">
+						<!-- <img
+							src="{{ url_for('static', filename='images/avatar3.svg') }}"
+							alt="Player 3 Avatar"
+							class="avatar"
+							id="avatar-3"
+						/> -->
+						<img
+							src="../static/images/avatar3.svg"
+							alt="Player 3 Avatar"
+							class="avatar"
+							id="avatar-3"
 						/>
-					</form>
-					<form id="tts3" method="POST" action="#">
-						<label for="tts">TTS 3:</label>
-						<input
-							id="checkbox3"
-							type="checkbox"
-							class="tts-checkbox"
-							style="text-align: left"
-							value="tts"
-							name="tts"
-							checked
-						/>
-					</form>
-					<br /><br />
-					<form id="choose3" class="choose-box" method="POST" action="#">
-						<label for="tts">Choose User:</label>
-						<input type="text" class="choose" />
-					</form>
-					<br /><br />
-					<select id="voicename3">
-						<option value="en-US-DavisNeural">Davis</option>
-						<option value="en-US-TonyNeural">Tony</option>
-						<option value="en-US-JasonNeural">Jason</option>
-						<option value="en-US-GuyNeural">Guy</option>
-						<option value="en-US-JaneNeural">Jane</option>
-						<option value="en-US-NancyNeural">Nancy</option>
-						<option value="en-US-JennyNeural">Jenny</option>
-						<option value="en-US-AriaNeural">Aria</option>
-					</select>
-					<select id="voicestyle3">
-						<option value="random">random</option>
-						<option value="angry">angry</option>
-						<option value="cheerful">cheerful</option>
-						<option value="excited">excited</option>
-						<option value="hopeful">hopeful</option>
-						<option value="sad">sad</option>
-						<option value="shouting">shouting</option>
-						<option value="terrified">terrified</option>
-						<option value="unfriendly">unfriendly</option>
-						<option value="whispering">whispering</option>
-					</select>
+					</div>
+					<div class="player-controls">
+						<form id="pickrandom3" method="POST" action="#">
+							<input
+								type="submit"
+								value="Pick Random"
+								id="pick-random-input"
+								style="border-color: #ccc; border-radius: 10px"
+							/>
+						</form>
+						<form id="tts3" method="POST" action="#">
+							<label for="tts">TTS 3:</label>
+							<input
+								id="checkbox3"
+								type="checkbox"
+								class="tts-checkbox"
+								style="text-align: left"
+								value="tts"
+								name="tts"
+								checked
+							/>
+						</form>
+						<br /><br />
+						<form id="choose3" class="choose-box" method="POST" action="#">
+							<label for="tts">Choose User:</label>
+							<input type="text" class="choose" />
+						</form>
+						<br /><br />
+						<select id="voicename3">
+							<option value="en-US-DavisNeural">Davis</option>
+							<option value="en-US-TonyNeural">Tony</option>
+							<option value="en-US-JasonNeural">Jason</option>
+							<option value="en-US-GuyNeural">Guy</option>
+							<option value="en-US-JaneNeural">Jane</option>
+							<option value="en-US-NancyNeural">Nancy</option>
+							<option value="en-US-JennyNeural">Jenny</option>
+							<option value="en-US-AriaNeural">Aria</option>
+						</select>
+						<select id="voicestyle3">
+							<option value="random">random</option>
+							<option value="angry">angry</option>
+							<option value="cheerful">cheerful</option>
+							<option value="excited">excited</option>
+							<option value="hopeful">hopeful</option>
+							<option value="sad">sad</option>
+							<option value="shouting">shouting</option>
+							<option value="terrified">terrified</option>
+							<option value="unfriendly">unfriendly</option>
+							<option value="whispering">whispering</option>
+						</select>
+					</div>
 					<br /><br />
 					<div class="user-name-box" id="user-name-box-3">
 						<span class="user-name" id="user-name-3">Temp User</span>
