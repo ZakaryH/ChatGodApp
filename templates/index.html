@@ -1,308 +1,1519 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
-<head>
-    
-    <title>DougDoug Chat God App</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+	<head>
+		<title>DougDoug Chat God App</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+			rel="stylesheet"
+		/>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
-    <!-- Note: we are getting a local script,  -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery-textfill@0.6.0/source/jquery.textfill.min.js"></script>
-    
-    <script type="text/javascript" charset="utf-8">
-        $(document).ready(function() {
+		<link
+			rel="stylesheet"
+			href="{{ url_for('static', filename='css/style.css') }}"
+		/>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+			integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+			crossorigin="anonymous"
+		></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"
+			integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ=="
+			crossorigin="anonymous"
+		></script>
+		<!-- Note: we are getting a local script,  -->
+		<script src="https://cdn.jsdelivr.net/npm/jquery-textfill@0.6.0/source/jquery.textfill.min.js"></script>
+		<link rel="stylesheet" href="../static/css/style.css" />
+		<script type="text/javascript" charset="utf-8">
+			$(document).ready(function () {
+				var socket = io();
 
-            var socket = io();
+				// Create speech visualizer bars dynamically to ensure correct number
+				function createSpeechVisualizers() {
+					for (let userNum = 1; userNum <= 3; userNum++) {
+						// Clear existing bars
+						$(`#speech-visualizer-${userNum}`).empty();
 
-            socket.on('message_send', function(msg, cb) {
-                console.log("Got data: " + msg)
+						// Add 15 bars for each visualizer
+						for (let i = 0; i < 15; i++) {
+							$(`#speech-visualizer-${userNum}`).append(
+								`<div class="speech-bar speech-bar-${userNum}"></div>`
+							);
+						}
+					}
+				}
 
-                // DATA RECEIVED:
-                // message = string
-                // current_user = string
-                // user_number = string (e.g. "1", "2")
+				// Initialize speech visualizers
+				createSpeechVisualizers();
 
-                $('#user-message-' + msg.user_number).text(msg.message);
-                if (msg.user_number == "1") {
-                    $('#user-name-' + msg.user_number).text(msg.current_user[0].toUpperCase() + msg.current_user.substr(1));
-                } else if (msg.user_number == "2") {
-                    $('#user-name-' + msg.user_number).text(msg.current_user[0].toUpperCase() + msg.current_user.substr(1));
-                } else if (msg.user_number == "3") {
-                    $('#user-name-' + msg.user_number).text(msg.current_user[0].toUpperCase() + msg.current_user.substr(1));
-                }
+				// Handle incoming messages
+				socket.on("message_send", function (msg, cb) {
+					console.log("Got data: " + msg);
 
-                // Add an optional title to the beginning of username:
-                // $('#user-name-' + msg.user_number).text('Mayor' + '\n' + msg.current_user[0].toUpperCase() + msg.current_user.substr(1) + " as Shrek");
-                
-                // Space out the text to fill the box evenly
+					// Update message and username
+					$("#user-message-" + msg.user_number).text(msg.message);
+					$("#user-name-" + msg.user_number).text(
+						msg.current_user[0].toUpperCase() + msg.current_user.substr(1)
+					);
 
-                $('#user-name-box-1').textfill({
-                     minFontPixels: 2,
-                     maxFontPixels: 50,
-                     explicitHeight: 60
-                 });
-                $('#user-message-box-1').textfill({
-                     minFontPixels: 2,
-                     maxFontPixels: 30
-                 });
-                $('#user-name-box-2').textfill({
-                     minFontPixels: 2,
-                     maxFontPixels: 50,
-                     explicitHeight: 60
-                 });
-                $('#user-message-box-2').textfill({
-                     minFontPixels: 2,
-                     maxFontPixels: 30
-                 });
-                $('#user-name-box-3').textfill({
-                     minFontPixels: 2,
-                    maxFontPixels: 50,
-                    explicitHeight: 60
-                 });
-                $('#user-message-box-3').textfill({
-                     minFontPixels: 2,
-                    maxFontPixels: 30
-                 });
+					// Animate the avatar for the user receiving the message
+					animateAvatar(msg.user_number);
 
-                if (cb)
-                    cb();
-            });
+					// Apply textfill to all user elements
+					applyTextFillToAllUsers();
 
-            $('form#pickrandom1').submit(function(event) {
-                socket.emit('pickrandom', {'user_number': '1'});
-                return false;
-            });
+					if (cb) cb();
+				});
 
-            $('form#pickrandom2').submit(function(event) {
-                socket.emit('pickrandom', {'user_number': '2'});
-                return false;
-            });
+				// Handle TTS processing events
+				socket.on("processing_tts", function (data) {
+					console.log("Processing TTS for: " + data.user_number);
 
-            $('form#pickrandom3').submit(function(event) {
-                socket.emit('pickrandom', {'user_number': '3'});
-                return false;
-            });
+					// Show speech visualization based on message length
+					showSpeechVisualization(data.user_number, data.message);
+				});
 
-            $('form#tts1').change(function(event) {
-                console.log($('#checkbox1').prop('checked'))
-                socket.emit('tts',
-                    {'user_number': '1',
-                    'checked': $('#checkbox1').prop('checked')});
-                return false;
-            });
+				// Function to show speech visualization with duration based on message length
+				function showSpeechVisualization(userNumber, message) {
+					// Calculate duration based on message length (approximately 100ms per character)
+					// with minimum of 1 second and maximum of 10 seconds
+					const baseDuration = Math.min(
+						Math.max(message.length * 100, 1000),
+						10000
+					);
 
-            $('form#tts2').change(function(event) {
-                console.log($('#checkbox2').prop('checked'))
-                socket.emit('tts',
-                    {'user_number': '2',
-                    'checked': $('#checkbox2').prop('checked')});
-                return false;
-            });
+					// Get the visualization container
+					const visualizer = $(`#speech-visualizer-${userNumber}`);
 
-            $('form#tts3').change(function(event) {
-                console.log($('#checkbox3').prop('checked'))
-                socket.emit('tts',
-                    {'user_number': '3',
-                    'checked': $('#checkbox3').prop('checked')});
-                return false;
-            });
+					// Reset any ongoing animations
+					visualizer.stop(true, true);
 
-            $('form#choose1').submit(function(event) {
-                socket.emit('choose',
-                    {'user_number': '1',
-                    'chosen_user': $("form#choose1 input").val()});
-                $("form#choose1 input").val('')
-                return false;
-            });
+					// Get the current voice style for this user to match colors
+					const voiceStyle = $(`#voicestyle${userNumber}`).val();
 
-            $('form#choose2').submit(function(event) {
-                socket.emit('choose',
-                    {'user_number': '2',
-                    'chosen_user': $("form#choose2 input").val()});
-                $("form#choose2 input").val('')
-                return false;
-            });
+					// Set color based on voice style
+					let barColor = "#79f1ff"; // Default color
 
-            $('form#choose3').submit(function(event) {
-                socket.emit('choose',
-                    {'user_number': '3',
-                    'chosen_user': $("form#choose3 input").val()});
-                $("form#choose3 input").val('')
-                return false;
-            });
+					switch (voiceStyle) {
+						case "angry":
+							barColor = "#ff6347"; // tomato
+							break;
+						case "cheerful":
+							barColor = "#ffd700"; // gold
+							break;
+						case "excited":
+							barColor = "#7cfc00"; // lawn green
+							break;
+						case "sad":
+							barColor = "#4682b4"; // steel blue
+							break;
+						case "terrified":
+							barColor = "#9400d3"; // dark violet
+							break;
+						case "whispering":
+							barColor = "#f5f5f5"; // white smoke
+							break;
+						case "unfriendly":
+							barColor = "#a52a2a"; // brown
+							break;
+						case "shouting":
+							barColor = "#ff4500"; // orange red
+							break;
+						case "hopeful":
+							barColor = "#00bfff"; // deep sky blue
+							break;
+					}
 
-            $('#voicename1').change(function() {
-                socket.emit('voicename', {'user_number': '1', 'voice_name': $(this).val()})
-            });
-            $('#voicestyle1').change(function() {
-                socket.emit('voicestyle', {'user_number': '1', 'voice_style': $(this).val()})
-            });
+					// Apply the color to all bars
+					$(`.speech-bar-${userNumber}`).css("background-color", barColor);
 
-            $('#voicename2').change(function() {
-                socket.emit('voicename', {'user_number': '2', 'voice_name': $(this).val()})
-            });
-            $('#voicestyle2').change(function() {
-                socket.emit('voicestyle', {'user_number': '2', 'voice_style': $(this).val()})
-            });
+					// Show the visualizer
+					visualizer.css("display", "flex");
 
-            $('#voicename3').change(function() {
-                socket.emit('voicename', {'user_number': '3', 'voice_name': $(this).val()})
-            });
-            $('#voicestyle3').change(function() {
-                socket.emit('voicestyle', {'user_number': '3', 'voice_style': $(this).val()})
-            });
-        });
-    </script>
-</head>
-<body>
-    <h1 style="margin-bottom: 10px;">Holy Chat God Selector</h1>
-    <div style="display:flex; flex-direction:row;">
+					// Randomly adjust heights of bars for animation effect
+					animateSpeechBars(userNumber);
 
-        <div>
-            <form id="pickrandom1" method="POST" action="#" >
-                <input type="submit" value="Pick Random" id="pick-random-input" style="border-color: #ccc; border-radius: 10px;">
-            </form>
-            <form id="tts1" method="POST" action="#">
-                <label for="tts">TTS 1:</label>
-                <input id="checkbox1" type="checkbox" class="tts-checkbox" style="text-align: left;" value="tts" name="tts" checked>
-            </form> 
-            <br><br>
-            <form id="choose1" class="choose-box" method="POST" action="#">
-                <label for="tts">Choose User:</label>
-                <input type="text" class="choose">
-            </form> 
-            <br><br>
-            <select id="voicename1">
-              <option value="en-US-DavisNeural">Davis</option>
-              <option value="en-US-TonyNeural">Tony</option>
-              <option value="en-US-JasonNeural">Jason</option>
-              <option value="en-US-GuyNeural">Guy</option>
-              <option value="en-US-JaneNeural">Jane</option>
-              <option value="en-US-NancyNeural">Nancy</option>
-              <option value="en-US-JennyNeural">Jenny</option>
-              <option value="en-US-AriaNeural">Aria</option>
-            </select>
-            <select id="voicestyle1">
-              <option value="random">random</option>
-              <option value="angry">angry</option>
-              <option value="cheerful">cheerful</option>
-              <option value="excited">excited</option>
-              <option value="hopeful">hopeful</option>
-              <option value="sad">sad</option>
-              <option value="shouting">shouting</option>
-              <option value="terrified">terrified</option>
-              <option value="unfriendly">unfriendly</option>
-              <option value="whispering">whispering</option>
-            </select>
-            <br><br>
-            <div class="user-name-box" id="user-name-box-1"> 
-                <span class="user-name" id="user-name-1">Temp User</span>
-            </div>
-            <div class="user-message-box" id="user-message-box-1">
-                <span class="user-message" id="user-message-1" >Temp message</span>
-            </div>
-        </div>
+					// Start animation interval
+					const animInterval = setInterval(() => {
+						animateSpeechBars(userNumber);
+					}, 100);
 
-        <!-- 3 Player Distance -->
-        <div style="width: 87px;"></div>
+					// Hide after the calculated duration
+					setTimeout(() => {
+						clearInterval(animInterval);
+						visualizer.fadeOut(300);
+					}, baseDuration);
+				}
 
-        <div>
-            <form id="pickrandom2" method="POST" action="#" >
-                <input type="submit" value="Pick Random" id="pick-random-input" style="border-color: #ccc; border-radius: 10px;">
-            </form>
-            <form id="tts2" method="POST" action="#">
-                <label for="tts">TTS 2:</label>
-                <input id="checkbox2" type="checkbox" class="tts-checkbox" style="text-align: left;" value="tts" name="tts" checked>
-            </form> 
-            <br><br>
-            <form id="choose2" class="choose-box" method="POST" action="#">
-                <label for="tts">Choose User:</label>
-                <input type="text" class="choose">
-            </form> 
-            <br><br>
-            <select id="voicename2">
-              <option value="en-US-DavisNeural">Davis</option>
-              <option value="en-US-TonyNeural">Tony</option>
-              <option value="en-US-JasonNeural">Jason</option>
-              <option value="en-US-GuyNeural">Guy</option>
-              <option value="en-US-JaneNeural">Jane</option>
-              <option value="en-US-NancyNeural">Nancy</option>
-              <option value="en-US-JennyNeural">Jenny</option>
-              <option value="en-US-AriaNeural">Aria</option>
-            </select>
-            <select id="voicestyle2">
-              <option value="random">random</option>
-              <option value="angry">angry</option>
-              <option value="cheerful">cheerful</option>
-              <option value="excited">excited</option>
-              <option value="hopeful">hopeful</option>
-              <option value="sad">sad</option>
-              <option value="shouting">shouting</option>
-              <option value="terrified">terrified</option>
-              <option value="unfriendly">unfriendly</option>
-              <option value="whispering">whispering</option>
-            </select>
-            <br><br>
-            <div class="user-name-box" id="user-name-box-2"> 
-                <span class="user-name" id="user-name-2">Temp User</span>
-            </div>
-            <div class="user-message-box" id="user-message-box-2">
-                <span class="user-message" id="user-message-2" >Temp message</span>
-            </div>
-        </div>
+				// Function to animate speech visualization bars
+				function animateSpeechBars(userNumber) {
+					$(`.speech-bar-${userNumber}`).each(function () {
+						const randomHeight = 5 + Math.random() * 15;
+						$(this).css("height", `${randomHeight}px`);
+					});
+				}
 
-        <!-- 3 Player Distance -->
-        <div style="width: 87px;"></div>
+				// Initialize avatar styles based on selected voice styles
+				for (let i = 1; i <= 3; i++) {
+					const voiceStyle = $(`#voicestyle${i}`).val();
 
-        <div>
-            <form id="pickrandom3" method="POST" action="#" >
-                <input type="submit" value="Pick Random" id="pick-random-input" style="border-color: #ccc; border-radius: 10px;">
-            </form>
-            <form id="tts3" method="POST" action="#">
-                <label for="tts">TTS 3:</label>
-                <input id="checkbox3" type="checkbox" class="tts-checkbox" style="text-align: left;" value="tts" name="tts" checked>
-            </form> 
-            <br><br>
-            <form id="choose3" class="choose-box" method="POST" action="#">
-                <label for="tts">Choose User:</label>
-                <input type="text" class="choose">
-            </form> 
-            <br><br>
-            <select id="voicename3">
-              <option value="en-US-DavisNeural">Davis</option>
-              <option value="en-US-TonyNeural">Tony</option>
-              <option value="en-US-JasonNeural">Jason</option>
-              <option value="en-US-GuyNeural">Guy</option>
-              <option value="en-US-JaneNeural">Jane</option>
-              <option value="en-US-NancyNeural">Nancy</option>
-              <option value="en-US-JennyNeural">Jenny</option>
-              <option value="en-US-AriaNeural">Aria</option>
-            </select>
-            <select id="voicestyle3">
-              <option value="random">random</option>
-              <option value="angry">angry</option>
-              <option value="cheerful">cheerful</option>
-              <option value="excited">excited</option>
-              <option value="hopeful">hopeful</option>
-              <option value="sad">sad</option>
-              <option value="shouting">shouting</option>
-              <option value="terrified">terrified</option>
-              <option value="unfriendly">unfriendly</option>
-              <option value="whispering">whispering</option>
-            </select>
-            <br><br>
-            <div class="user-name-box" id="user-name-box-3"> 
-                <span class="user-name" id="user-name-3">Temp User</span>
-            </div>
-            <div class="user-message-box" id="user-message-box-3">
-                <span class="user-message" id="user-message-3" >Temp message</span>
-            </div>
-        </div>
+					// Apply styling based on voice style
+					const avatar = $(`#avatar-${i}`);
+					const container = $(`#avatar-container-${i}`);
 
-    </div>
-</body>
+					// Reset any previous styling
+					container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+
+					// Apply styling based on voice style
+					switch (voiceStyle) {
+						case "angry":
+							container.css("box-shadow", "0 0 15px rgba(255, 99, 71, 0.8)");
+							avatar.css("filter", "hue-rotate(-40deg) saturate(1.5)");
+							break;
+						case "cheerful":
+							container.css("box-shadow", "0 0 15px rgba(255, 215, 0, 0.8)");
+							avatar.css("filter", "brightness(1.2) saturate(1.2)");
+							break;
+						case "excited":
+							container.css("box-shadow", "0 0 15px rgba(124, 252, 0, 0.8)");
+							avatar.css("filter", "brightness(1.3) saturate(1.3)");
+							break;
+						case "sad":
+							container.css("box-shadow", "0 0 15px rgba(70, 130, 180, 0.8)");
+							avatar.css("filter", "brightness(0.8) saturate(0.8)");
+							break;
+						case "terrified":
+							container.css("box-shadow", "0 0 15px rgba(148, 0, 211, 0.8)");
+							avatar.css("filter", "hue-rotate(90deg) brightness(0.9)");
+							break;
+						case "whispering":
+							container.css("box-shadow", "0 0 15px rgba(255, 255, 255, 0.5)");
+							avatar.css("filter", "brightness(0.7) contrast(0.9)");
+							break;
+						case "unfriendly":
+							container.css("box-shadow", "0 0 15px rgba(165, 42, 42, 0.8)");
+							avatar.css("filter", "sepia(0.5) saturate(1.3)");
+							break;
+						case "shouting":
+							container.css("box-shadow", "0 0 15px rgba(255, 69, 0, 0.8)");
+							avatar.css("filter", "contrast(1.4) brightness(1.2)");
+							break;
+						case "hopeful":
+							container.css("box-shadow", "0 0 15px rgba(0, 191, 255, 0.8)");
+							avatar.css("filter", "brightness(1.1) contrast(1.1)");
+							break;
+						case "random":
+						default:
+							avatar.css("filter", "none");
+							container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+							break;
+					}
+
+					// Initial subtle animation on page load for each avatar
+					setTimeout(() => {
+						// Animation for welcome effect
+						container.addClass("avatar-animate");
+
+						// Also add subtle avatar image wiggle
+						avatar.css("transform", "translateY(-5px)");
+
+						// Reset avatar position after animation
+						setTimeout(() => {
+							avatar.css("transform", "translateY(0)");
+						}, 700);
+					}, i * 500); // Stagger the animations
+				}
+
+				// Function to animate avatar when a new message is received
+				function animateAvatar(userNumber) {
+					const avatarContainer = $(`#avatar-container-${userNumber}`);
+					const avatar = $(`#avatar-${userNumber}`);
+
+					// Remove animation class if it exists
+					avatarContainer.removeClass("avatar-animate");
+
+					// Force DOM reflow to restart animation
+					void avatarContainer[0].offsetWidth;
+
+					// Add animation class
+					avatarContainer.addClass("avatar-animate");
+
+					// Also add subtle avatar image wiggle
+					avatar.css("transform", "translateY(-5px)");
+
+					// Reset avatar position after animation
+					setTimeout(function () {
+						avatar.css("transform", "translateY(0)");
+					}, 700);
+				}
+
+				// Apply textfill to all user elements
+				function applyTextFillToAllUsers() {
+					for (let i = 1; i <= 3; i++) {
+						$("#user-name-box-" + i).textfill({
+							minFontPixels: 2,
+							maxFontPixels: 50,
+							explicitHeight: 60,
+						});
+						$("#user-message-box-" + i).textfill({
+							minFontPixels: 2,
+							maxFontPixels: 30,
+						});
+					}
+				}
+
+				// Setup event handlers for all users
+				for (let userNum = 1; userNum <= 3; userNum++) {
+					setupUserEventHandlers(userNum);
+				}
+
+				function setupUserEventHandlers(userNum) {
+					// Pick random event
+					$(`#pickrandom${userNum}`).submit(function (event) {
+						socket.emit("pickrandom", { user_number: userNum.toString() });
+						return false;
+					});
+
+					// TTS toggle event
+					$(`#tts${userNum}`).change(function (event) {
+						socket.emit("tts", {
+							user_number: userNum.toString(),
+							checked: $(`#checkbox${userNum}`).prop("checked"),
+						});
+						return false;
+					});
+
+					// Choose user event
+					$(`#choose${userNum}`).submit(function (event) {
+						socket.emit("choose", {
+							user_number: userNum.toString(),
+							chosen_user: $(`form#choose${userNum} input`).val(),
+						});
+						$(`form#choose${userNum} input`).val("");
+						return false;
+					});
+
+					// Voice name change event
+					$(`#voicename${userNum}`).change(function () {
+						socket.emit("voicename", {
+							user_number: userNum.toString(),
+							voice_name: $(this).val(),
+						});
+					});
+
+					// Voice style change event
+					$(`#voicestyle${userNum}`).change(function () {
+						const voiceStyle = $(this).val();
+						socket.emit("voicestyle", {
+							user_number: userNum.toString(),
+							voice_style: voiceStyle,
+						});
+
+						// Update avatar styling based on voice style - use the direct implementation
+						const avatar = $(`#avatar-${userNum}`);
+						const container = $(`#avatar-container-${userNum}`);
+
+						// Reset any previous styling
+						container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+
+						// Apply styling based on voice style
+						switch (voiceStyle) {
+							case "angry":
+								container.css("box-shadow", "0 0 15px rgba(255, 99, 71, 0.8)");
+								avatar.css("filter", "hue-rotate(-40deg) saturate(1.5)");
+								break;
+							case "cheerful":
+								container.css("box-shadow", "0 0 15px rgba(255, 215, 0, 0.8)");
+								avatar.css("filter", "brightness(1.2) saturate(1.2)");
+								break;
+							case "excited":
+								container.css("box-shadow", "0 0 15px rgba(124, 252, 0, 0.8)");
+								avatar.css("filter", "brightness(1.3) saturate(1.3)");
+								break;
+							case "sad":
+								container.css("box-shadow", "0 0 15px rgba(70, 130, 180, 0.8)");
+								avatar.css("filter", "brightness(0.8) saturate(0.8)");
+								break;
+							case "terrified":
+								container.css("box-shadow", "0 0 15px rgba(148, 0, 211, 0.8)");
+								avatar.css("filter", "hue-rotate(90deg) brightness(0.9)");
+								break;
+							case "whispering":
+								container.css(
+									"box-shadow",
+									"0 0 15px rgba(255, 255, 255, 0.5)"
+								);
+								avatar.css("filter", "brightness(0.7) contrast(0.9)");
+								break;
+							case "unfriendly":
+								container.css("box-shadow", "0 0 15px rgba(165, 42, 42, 0.8)");
+								avatar.css("filter", "sepia(0.5) saturate(1.3)");
+								break;
+							case "shouting":
+								container.css("box-shadow", "0 0 15px rgba(255, 69, 0, 0.8)");
+								avatar.css("filter", "contrast(1.4) brightness(1.2)");
+								break;
+							case "hopeful":
+								container.css("box-shadow", "0 0 15px rgba(0, 191, 255, 0.8)");
+								avatar.css("filter", "brightness(1.1) contrast(1.1)");
+								break;
+							case "random":
+							default:
+								avatar.css("filter", "none");
+								container.css(
+									"box-shadow",
+									"0 0 15px rgba(121, 241, 255, 0.6)"
+								);
+								break;
+						}
+					});
+				}
+
+				// Function to update avatar styling based on voice style
+				function updateAvatarStyle(userNumber, voiceStyle) {
+					const avatar = $(`#avatar-${userNumber}`);
+					const container = $(`#avatar-container-${userNumber}`);
+
+					// Reset any previous styling
+					container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+
+					// Apply styling based on voice style
+					switch (voiceStyle) {
+						case "angry":
+							container.css("box-shadow", "0 0 15px rgba(255, 99, 71, 0.8)");
+							avatar.css("filter", "hue-rotate(-40deg) saturate(1.5)");
+							break;
+						case "cheerful":
+							container.css("box-shadow", "0 0 15px rgba(255, 215, 0, 0.8)");
+							avatar.css("filter", "brightness(1.2) saturate(1.2)");
+							break;
+						case "excited":
+							container.css("box-shadow", "0 0 15px rgba(124, 252, 0, 0.8)");
+							avatar.css("filter", "brightness(1.3) saturate(1.3)");
+							break;
+						case "sad":
+							container.css("box-shadow", "0 0 15px rgba(70, 130, 180, 0.8)");
+							avatar.css("filter", "brightness(0.8) saturate(0.8)");
+							break;
+						case "terrified":
+							container.css("box-shadow", "0 0 15px rgba(148, 0, 211, 0.8)");
+							avatar.css("filter", "hue-rotate(90deg) brightness(0.9)");
+							break;
+						case "whispering":
+							container.css("box-shadow", "0 0 15px rgba(255, 255, 255, 0.5)");
+							avatar.css("filter", "brightness(0.7) contrast(0.9)");
+							break;
+						case "unfriendly":
+							container.css("box-shadow", "0 0 15px rgba(165, 42, 42, 0.8)");
+							avatar.css("filter", "sepia(0.5) saturate(1.3)");
+							break;
+						case "shouting":
+							container.css("box-shadow", "0 0 15px rgba(255, 69, 0, 0.8)");
+							avatar.css("filter", "contrast(1.4) brightness(1.2)");
+							break;
+						case "hopeful":
+							container.css("box-shadow", "0 0 15px rgba(0, 191, 255, 0.8)");
+							avatar.css("filter", "brightness(1.1) contrast(1.1)");
+							break;
+						case "random":
+						default:
+							avatar.css("filter", "none");
+							container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+							break;
+					}
+				}
+			});
+
+			function changeTheme(theme) {
+				if (theme === "default") {
+					document.body.style.backgroundColor = "#29d";
+				} else if (theme === "dark") {
+					document.body.style.backgroundColor = "#111";
+				} else if (theme === "transparent") {
+					document.body.style.backgroundColor = "transparent";
+				}
+			}
+
+			// Test function for avatar animations - bypass websocket
+			function testAvatarAnimation(userNumber) {
+				// Get current voice style for the user
+				const voiceStyle = $(`#voicestyle${userNumber}`).val();
+
+				// Display what's being tested in the message area
+				$(`#user-message-${userNumber}`).text(
+					`Testing "${voiceStyle}" animation`
+				);
+				$(`#user-name-${userNumber}`).text(`Test User ${userNumber}`);
+
+				// Apply the style to the avatar
+				const avatar = $(`#avatar-${userNumber}`);
+				const container = $(`#avatar-container-${userNumber}`);
+
+				// Reset any previous styling
+				container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+
+				// Apply styling based on voice style
+				switch (voiceStyle) {
+					case "angry":
+						container.css("box-shadow", "0 0 15px rgba(255, 99, 71, 0.8)");
+						avatar.css("filter", "hue-rotate(-40deg) saturate(1.5)");
+						break;
+					case "cheerful":
+						container.css("box-shadow", "0 0 15px rgba(255, 215, 0, 0.8)");
+						avatar.css("filter", "brightness(1.2) saturate(1.2)");
+						break;
+					case "excited":
+						container.css("box-shadow", "0 0 15px rgba(124, 252, 0, 0.8)");
+						avatar.css("filter", "brightness(1.3) saturate(1.3)");
+						break;
+					case "sad":
+						container.css("box-shadow", "0 0 15px rgba(70, 130, 180, 0.8)");
+						avatar.css("filter", "brightness(0.8) saturate(0.8)");
+						break;
+					case "terrified":
+						container.css("box-shadow", "0 0 15px rgba(148, 0, 211, 0.8)");
+						avatar.css("filter", "hue-rotate(90deg) brightness(0.9)");
+						break;
+					case "whispering":
+						container.css("box-shadow", "0 0 15px rgba(255, 255, 255, 0.5)");
+						avatar.css("filter", "brightness(0.7) contrast(0.9)");
+						break;
+					case "unfriendly":
+						container.css("box-shadow", "0 0 15px rgba(165, 42, 42, 0.8)");
+						avatar.css("filter", "sepia(0.5) saturate(1.3)");
+						break;
+					case "shouting":
+						container.css("box-shadow", "0 0 15px rgba(255, 69, 0, 0.8)");
+						avatar.css("filter", "contrast(1.4) brightness(1.2)");
+						break;
+					case "hopeful":
+						container.css("box-shadow", "0 0 15px rgba(0, 191, 255, 0.8)");
+						avatar.css("filter", "brightness(1.1) contrast(1.1)");
+						break;
+					case "random":
+					default:
+						avatar.css("filter", "none");
+						container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+						break;
+				}
+
+				// Remove animation class if it exists
+				container.removeClass("avatar-animate");
+
+				// Force DOM reflow to restart animation
+				void container[0].offsetWidth;
+
+				// Add animation class
+				container.addClass("avatar-animate");
+
+				// Also add subtle avatar image wiggle
+				avatar.css("transform", "translateY(-5px)");
+
+				// Reset avatar position after animation
+				setTimeout(function () {
+					avatar.css("transform", "translateY(0)");
+				}, 700);
+
+				// Apply textfill to adjust text sizes
+				for (let i = 1; i <= 3; i++) {
+					$("#user-name-box-" + i).textfill({
+						minFontPixels: 2,
+						maxFontPixels: 50,
+						explicitHeight: 60,
+					});
+					$("#user-message-box-" + i).textfill({
+						minFontPixels: 2,
+						maxFontPixels: 30,
+					});
+				}
+
+				// Also test the speech visualization
+				showTestSpeechVisualization(userNumber);
+			}
+
+			// Function to test speech visualization
+			function showTestSpeechVisualization(userNumber) {
+				// Get message length for test
+				const message = $(`#user-message-${userNumber}`).text();
+				const baseDuration = Math.min(
+					Math.max(message.length * 100, 1000),
+					10000
+				);
+
+				// Get the visualization container
+				const visualizer = $(`#speech-visualizer-${userNumber}`);
+
+				// Reset any ongoing animations
+				visualizer.stop(true, true);
+
+				// Get the current voice style for this user to match colors
+				const voiceStyle = $(`#voicestyle${userNumber}`).val();
+
+				// Set color based on voice style
+				let barColor = "#79f1ff"; // Default color
+
+				switch (voiceStyle) {
+					case "angry":
+						barColor = "#ff6347"; // tomato
+						break;
+					case "cheerful":
+						barColor = "#ffd700"; // gold
+						break;
+					case "excited":
+						barColor = "#7cfc00"; // lawn green
+						break;
+					case "sad":
+						barColor = "#4682b4"; // steel blue
+						break;
+					case "terrified":
+						barColor = "#9400d3"; // dark violet
+						break;
+					case "whispering":
+						barColor = "#f5f5f5"; // white smoke
+						break;
+					case "unfriendly":
+						barColor = "#a52a2a"; // brown
+						break;
+					case "shouting":
+						barColor = "#ff4500"; // orange red
+						break;
+					case "hopeful":
+						barColor = "#00bfff"; // deep sky blue
+						break;
+				}
+
+				// Apply the color to all bars
+				$(`.speech-bar-${userNumber}`).css("background-color", barColor);
+
+				// Show the visualizer
+				visualizer.css("display", "flex");
+
+				// Animate bars
+				const animInterval = setInterval(() => {
+					$(`.speech-bar-${userNumber}`).each(function () {
+						const randomHeight = 5 + Math.random() * 15;
+						$(this).css("height", `${randomHeight}px`);
+					});
+				}, 100);
+
+				// Hide after the calculated duration
+				setTimeout(() => {
+					clearInterval(animInterval);
+					visualizer.fadeOut(300);
+				}, baseDuration);
+			}
+
+			// Test all avatars in sequence
+			function testAllAvatars() {
+				// Start with player 1
+				testAvatarAnimation("1");
+
+				// Then player 2 after a delay
+				setTimeout(function () {
+					testAvatarAnimation("2");
+				}, 1000);
+
+				// Finally player 3 after another delay
+				setTimeout(function () {
+					testAvatarAnimation("3");
+				}, 2000);
+			}
+
+			// Test a specific voice style on the selected player
+			function testStyle(voiceStyle) {
+				// Get the selected player
+				const playerNumber = $("#test-player-select").val();
+
+				// Update the voice style dropdown for that player to display what's being tested
+				$(`#voicestyle${playerNumber}`).val(voiceStyle);
+
+				// Display a test message describing the style
+				$(`#user-message-${playerNumber}`).text(
+					`Testing "${voiceStyle}" style`
+				);
+				$(`#user-name-${playerNumber}`).text(`Test User ${playerNumber}`);
+
+				// Apply the style to the avatar
+				const avatar = $(`#avatar-${playerNumber}`);
+				const container = $(`#avatar-container-${playerNumber}`);
+
+				// Reset any previous styling
+				container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+
+				// Apply styling based on voice style
+				switch (voiceStyle) {
+					case "angry":
+						container.css("box-shadow", "0 0 15px rgba(255, 99, 71, 0.8)");
+						avatar.css("filter", "hue-rotate(-40deg) saturate(1.5)");
+						break;
+					case "cheerful":
+						container.css("box-shadow", "0 0 15px rgba(255, 215, 0, 0.8)");
+						avatar.css("filter", "brightness(1.2) saturate(1.2)");
+						break;
+					case "excited":
+						container.css("box-shadow", "0 0 15px rgba(124, 252, 0, 0.8)");
+						avatar.css("filter", "brightness(1.3) saturate(1.3)");
+						break;
+					case "sad":
+						container.css("box-shadow", "0 0 15px rgba(70, 130, 180, 0.8)");
+						avatar.css("filter", "brightness(0.8) saturate(0.8)");
+						break;
+					case "terrified":
+						container.css("box-shadow", "0 0 15px rgba(148, 0, 211, 0.8)");
+						avatar.css("filter", "hue-rotate(90deg) brightness(0.9)");
+						break;
+					case "whispering":
+						container.css("box-shadow", "0 0 15px rgba(255, 255, 255, 0.5)");
+						avatar.css("filter", "brightness(0.7) contrast(0.9)");
+						break;
+					case "unfriendly":
+						container.css("box-shadow", "0 0 15px rgba(165, 42, 42, 0.8)");
+						avatar.css("filter", "sepia(0.5) saturate(1.3)");
+						break;
+					case "shouting":
+						container.css("box-shadow", "0 0 15px rgba(255, 69, 0, 0.8)");
+						avatar.css("filter", "contrast(1.4) brightness(1.2)");
+						break;
+					case "hopeful":
+						container.css("box-shadow", "0 0 15px rgba(0, 191, 255, 0.8)");
+						avatar.css("filter", "brightness(1.1) contrast(1.1)");
+						break;
+					case "random":
+					default:
+						avatar.css("filter", "none");
+						container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+						break;
+				}
+
+				// Trigger the animation
+				container.removeClass("avatar-animate");
+				void container[0].offsetWidth;
+				container.addClass("avatar-animate");
+
+				// Also add subtle avatar image wiggle
+				avatar.css("transform", "translateY(-5px)");
+
+				// Reset avatar position after animation
+				setTimeout(function () {
+					avatar.css("transform", "translateY(0)");
+				}, 700);
+
+				// Apply textfill to adjust text sizes
+				for (let i = 1; i <= 3; i++) {
+					$("#user-name-box-" + i).textfill({
+						minFontPixels: 2,
+						maxFontPixels: 50,
+						explicitHeight: 60,
+					});
+					$("#user-message-box-" + i).textfill({
+						minFontPixels: 2,
+						maxFontPixels: 30,
+					});
+				}
+
+				// Also show the speech visualization
+				showTestSpeechVisualization(playerNumber);
+			}
+
+			// Test all voice styles in sequence on the selected player
+			function testAllStyles() {
+				const playerNumber = $("#test-player-select").val();
+				const styles = [
+					"angry",
+					"cheerful",
+					"excited",
+					"sad",
+					"terrified",
+					"whispering",
+					"shouting",
+					"hopeful",
+					"unfriendly",
+					"random",
+				];
+
+				// Set a counter message
+				$(`#user-name-${playerNumber}`).text(`Testing All Styles`);
+				$(`#user-message-${playerNumber}`).text(`Starting style tests...`);
+
+				// Show speech visualization initially
+				showTestSpeechVisualization(playerNumber);
+
+				// Loop through all styles with delay
+				styles.forEach((style, index) => {
+					setTimeout(() => {
+						// Update the message
+						$(`#user-message-${playerNumber}`).text(
+							`Testing "${style}" style (${index + 1}/${styles.length})`
+						);
+
+						// Update the dropdown to show what's being tested
+						$(`#voicestyle${playerNumber}`).val(style);
+
+						// Get avatar elements
+						const avatar = $(`#avatar-${playerNumber}`);
+						const container = $(`#avatar-container-${playerNumber}`);
+
+						// Reset styling
+						container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+
+						// Apply new styling based on current style
+						switch (style) {
+							case "angry":
+								container.css("box-shadow", "0 0 15px rgba(255, 99, 71, 0.8)");
+								avatar.css("filter", "hue-rotate(-40deg) saturate(1.5)");
+								break;
+							case "cheerful":
+								container.css("box-shadow", "0 0 15px rgba(255, 215, 0, 0.8)");
+								avatar.css("filter", "brightness(1.2) saturate(1.2)");
+								break;
+							case "excited":
+								container.css("box-shadow", "0 0 15px rgba(124, 252, 0, 0.8)");
+								avatar.css("filter", "brightness(1.3) saturate(1.3)");
+								break;
+							case "sad":
+								container.css("box-shadow", "0 0 15px rgba(70, 130, 180, 0.8)");
+								avatar.css("filter", "brightness(0.8) saturate(0.8)");
+								break;
+							case "terrified":
+								container.css("box-shadow", "0 0 15px rgba(148, 0, 211, 0.8)");
+								avatar.css("filter", "hue-rotate(90deg) brightness(0.9)");
+								break;
+							case "whispering":
+								container.css(
+									"box-shadow",
+									"0 0 15px rgba(255, 255, 255, 0.5)"
+								);
+								avatar.css("filter", "brightness(0.7) contrast(0.9)");
+								break;
+							case "unfriendly":
+								container.css("box-shadow", "0 0 15px rgba(165, 42, 42, 0.8)");
+								avatar.css("filter", "sepia(0.5) saturate(1.3)");
+								break;
+							case "shouting":
+								container.css("box-shadow", "0 0 15px rgba(255, 69, 0, 0.8)");
+								avatar.css("filter", "contrast(1.4) brightness(1.2)");
+								break;
+							case "hopeful":
+								container.css("box-shadow", "0 0 15px rgba(0, 191, 255, 0.8)");
+								avatar.css("filter", "brightness(1.1) contrast(1.1)");
+								break;
+							case "random":
+							default:
+								avatar.css("filter", "none");
+								container.css(
+									"box-shadow",
+									"0 0 15px rgba(121, 241, 255, 0.6)"
+								);
+								break;
+						}
+
+						// Animate the avatar
+						container.removeClass("avatar-animate");
+						void container[0].offsetWidth;
+						container.addClass("avatar-animate");
+
+						// Add subtle wiggle
+						avatar.css("transform", "translateY(-5px)");
+						setTimeout(() => {
+							avatar.css("transform", "translateY(0)");
+						}, 700);
+
+						// Apply textfill
+						for (let i = 1; i <= 3; i++) {
+							$("#user-name-box-" + i).textfill({
+								minFontPixels: 2,
+								maxFontPixels: 50,
+								explicitHeight: 60,
+							});
+							$("#user-message-box-" + i).textfill({
+								minFontPixels: 2,
+								maxFontPixels: 30,
+							});
+						}
+
+						// Show speech visualization for each style
+						if (index < styles.length - 1) {
+							// Don't show for the last style to avoid overlap
+							showTestSpeechVisualization(playerNumber);
+						}
+					}, index * 1200); // 1.2 seconds between each style
+				});
+			}
+
+			// Stress test - rapidly test different styles on all players
+			function stressTest() {
+				const styles = [
+					"angry",
+					"cheerful",
+					"excited",
+					"sad",
+					"terrified",
+					"whispering",
+					"shouting",
+					"hopeful",
+					"unfriendly",
+					"random",
+				];
+
+				// Display stress test message on all players
+				for (let i = 1; i <= 3; i++) {
+					$(`#user-name-${i}`).text(`Stress Test`);
+					$(`#user-message-${i}`).text(`Starting stress test...`);
+
+					// Show speech visualization on all players initially
+					showTestSpeechVisualization(i.toString());
+				}
+
+				// Number of animation cycles to run
+				const cycles = 5;
+
+				// Run multiple animation cycles
+				for (let cycle = 0; cycle < cycles; cycle++) {
+					// For each cycle, animate all players with random styles
+					for (let player = 1; player <= 3; player++) {
+						setTimeout(() => {
+							// Pick a random style
+							const randomStyle =
+								styles[Math.floor(Math.random() * styles.length)];
+
+							// Display what's happening
+							$(`#user-message-${player}`).text(
+								`Style: ${randomStyle} (${cycle + 1}/${cycles})`
+							);
+
+							// Update the dropdown to show what's being tested
+							$(`#voicestyle${player}`).val(randomStyle);
+
+							// Apply avatar styles directly
+							const avatar = $(`#avatar-${player}`);
+							const container = $(`#avatar-container-${player}`);
+
+							// Reset and apply new style
+							container.css("box-shadow", "0 0 15px rgba(121, 241, 255, 0.6)");
+
+							// Apply styling based on the random style
+							switch (randomStyle) {
+								case "angry":
+									container.css(
+										"box-shadow",
+										"0 0 15px rgba(255, 99, 71, 0.8)"
+									);
+									avatar.css("filter", "hue-rotate(-40deg) saturate(1.5)");
+									break;
+								case "cheerful":
+									container.css(
+										"box-shadow",
+										"0 0 15px rgba(255, 215, 0, 0.8)"
+									);
+									avatar.css("filter", "brightness(1.2) saturate(1.2)");
+									break;
+								case "excited":
+									container.css(
+										"box-shadow",
+										"0 0 15px rgba(124, 252, 0, 0.8)"
+									);
+									avatar.css("filter", "brightness(1.3) saturate(1.3)");
+									break;
+								case "sad":
+									container.css(
+										"box-shadow",
+										"0 0 15px rgba(70, 130, 180, 0.8)"
+									);
+									avatar.css("filter", "brightness(0.8) saturate(0.8)");
+									break;
+								case "terrified":
+									container.css(
+										"box-shadow",
+										"0 0 15px rgba(148, 0, 211, 0.8)"
+									);
+									avatar.css("filter", "hue-rotate(90deg) brightness(0.9)");
+									break;
+								case "whispering":
+									container.css(
+										"box-shadow",
+										"0 0 15px rgba(255, 255, 255, 0.5)"
+									);
+									avatar.css("filter", "brightness(0.7) contrast(0.9)");
+									break;
+								case "unfriendly":
+									container.css(
+										"box-shadow",
+										"0 0 15px rgba(165, 42, 42, 0.8)"
+									);
+									avatar.css("filter", "sepia(0.5) saturate(1.3)");
+									break;
+								case "shouting":
+									container.css("box-shadow", "0 0 15px rgba(255, 69, 0, 0.8)");
+									avatar.css("filter", "contrast(1.4) brightness(1.2)");
+									break;
+								case "hopeful":
+									container.css(
+										"box-shadow",
+										"0 0 15px rgba(0, 191, 255, 0.8)"
+									);
+									avatar.css("filter", "brightness(1.1) contrast(1.1)");
+									break;
+								case "random":
+								default:
+									avatar.css("filter", "none");
+									container.css(
+										"box-shadow",
+										"0 0 15px rgba(121, 241, 255, 0.6)"
+									);
+									break;
+							}
+
+							// Animate the avatar
+							container.removeClass("avatar-animate");
+							void container[0].offsetWidth;
+							container.addClass("avatar-animate");
+
+							avatar.css("transform", "translateY(-5px)");
+							setTimeout(() => {
+								avatar.css("transform", "translateY(0)");
+							}, 400);
+
+							// Update text sizing
+							for (let i = 1; i <= 3; i++) {
+								$("#user-name-box-" + i).textfill({
+									minFontPixels: 2,
+									maxFontPixels: 50,
+									explicitHeight: 60,
+								});
+								$("#user-message-box-" + i).textfill({
+									minFontPixels: 2,
+									maxFontPixels: 30,
+								});
+							}
+
+							// Show speech visualization with each animation
+							showTestSpeechVisualization(player.toString());
+						}, cycle * 1500 + player * 300); // Stagger players within each cycle
+					}
+				}
+			}
+
+			// Toggle the test panel visibility
+			function toggleTestPanel() {
+				const panel = $("#test-panel-content");
+				const toggle = $("#test-panel-toggle");
+
+				if (panel.is(":visible")) {
+					panel.slideUp();
+					toggle.text("▲");
+				} else {
+					panel.slideDown();
+					toggle.text("▼");
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<h1>Holy Chat God Selector</h1>
+			<div class="toggle-container">
+				<select onchange="changeTheme(this.value)">
+					<option value="default">Default</option>
+					<option value="dark">Dark</option>
+					<option value="transparent">Transparent</option>
+				</select>
+			</div>
+
+			<!-- Animation Test Panel -->
+			<div
+				style="
+					background-color: rgba(0, 0, 0, 0.3);
+					padding: 15px;
+					border-radius: 10px;
+					margin-bottom: 20px;
+					text-align: center;
+				"
+			>
+				<h3 style="margin-top: 0; cursor: pointer" onclick="toggleTestPanel()">
+					Avatar Animation Test Panel
+					<span
+						id="test-panel-toggle"
+						style="font-size: 0.8em; margin-left: 10px"
+						>▲</span
+					>
+				</h3>
+
+				<div id="test-panel-content" style="display: none">
+					<p>Test animations without WebSocket messages</p>
+					<div
+						style="
+							display: flex;
+							justify-content: space-around;
+							margin-top: 10px;
+						"
+					>
+						<button
+							onclick="testAvatarAnimation('1')"
+							style="
+								background-color: #4fd1c5;
+								color: white;
+								border: none;
+								padding: 8px 15px;
+								border-radius: 5px;
+								cursor: pointer;
+							"
+						>
+							Test Player 1
+						</button>
+						<button
+							onclick="testAvatarAnimation('2')"
+							style="
+								background-color: #9f7aea;
+								color: white;
+								border: none;
+								padding: 8px 15px;
+								border-radius: 5px;
+								cursor: pointer;
+							"
+						>
+							Test Player 2
+						</button>
+						<button
+							onclick="testAvatarAnimation('3')"
+							style="
+								background-color: #718096;
+								color: white;
+								border: none;
+								padding: 8px 15px;
+								border-radius: 5px;
+								cursor: pointer;
+							"
+						>
+							Test Player 3
+						</button>
+					</div>
+					<div style="margin-top: 10px">
+						<button
+							onclick="testAllAvatars()"
+							style="
+								background-color: #e53e3e;
+								color: white;
+								border: none;
+								padding: 8px 15px;
+								border-radius: 5px;
+								cursor: pointer;
+							"
+						>
+							Test All Avatars
+						</button>
+						<button
+							onclick="stressTest()"
+							style="
+								background-color: #dd6b20;
+								color: white;
+								border: none;
+								padding: 8px 15px;
+								border-radius: 5px;
+								cursor: pointer;
+								margin-left: 10px;
+							"
+						>
+							Stress Test
+						</button>
+					</div>
+
+					<!-- Voice Style Test -->
+					<div
+						style="
+							margin-top: 15px;
+							border-top: 1px solid rgba(255, 255, 255, 0.2);
+							padding-top: 15px;
+						"
+					>
+						<h4 style="margin-top: 0">Test Specific Voice Style</h4>
+						<div
+							style="
+								display: flex;
+								flex-wrap: wrap;
+								justify-content: center;
+								gap: 5px;
+								margin-top: 10px;
+							"
+						>
+							<select
+								id="test-player-select"
+								style="padding: 5px; border-radius: 5px; margin-right: 10px"
+							>
+								<option value="1">Player 1</option>
+								<option value="2">Player 2</option>
+								<option value="3">Player 3</option>
+							</select>
+							<button
+								onclick="testStyle('angry')"
+								style="
+									background-color: #e53e3e;
+									color: white;
+									border: none;
+									padding: 5px 10px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Angry
+							</button>
+							<button
+								onclick="testStyle('cheerful')"
+								style="
+									background-color: #f6ad55;
+									color: white;
+									border: none;
+									padding: 5px 10px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Cheerful
+							</button>
+							<button
+								onclick="testStyle('excited')"
+								style="
+									background-color: #68d391;
+									color: white;
+									border: none;
+									padding: 5px 10px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Excited
+							</button>
+							<button
+								onclick="testStyle('sad')"
+								style="
+									background-color: #4299e1;
+									color: white;
+									border: none;
+									padding: 5px 10px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Sad
+							</button>
+							<button
+								onclick="testStyle('terrified')"
+								style="
+									background-color: #9f7aea;
+									color: white;
+									border: none;
+									padding: 5px 10px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Terrified
+							</button>
+							<button
+								onclick="testStyle('whispering')"
+								style="
+									background-color: #a0aec0;
+									color: white;
+									border: none;
+									padding: 5px 10px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Whispering
+							</button>
+							<button
+								onclick="testStyle('shouting')"
+								style="
+									background-color: #dd6b20;
+									color: white;
+									border: none;
+									padding: 5px 10px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Shouting
+							</button>
+							<button
+								onclick="testStyle('hopeful')"
+								style="
+									background-color: #38b2ac;
+									color: white;
+									border: none;
+									padding: 5px 10px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Hopeful
+							</button>
+							<button
+								onclick="testStyle('unfriendly')"
+								style="
+									background-color: #822727;
+									color: white;
+									border: none;
+									padding: 5px 10px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Unfriendly
+							</button>
+						</div>
+						<div style="margin-top: 10px">
+							<button
+								onclick="testAllStyles()"
+								style="
+									background-color: #805ad5;
+									color: white;
+									border: none;
+									padding: 8px 15px;
+									border-radius: 5px;
+									cursor: pointer;
+								"
+							>
+								Test All Styles
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="main-container">
+				<div class="player-container">
+					<div class="player-controls">
+						<form id="pickrandom1" method="POST" action="#">
+							<input
+								type="submit"
+								value="Pick Random"
+								id="pick-random-input"
+								style="border-color: #ccc; border-radius: 10px"
+							/>
+						</form>
+						<form id="tts1" method="POST" action="#">
+							<label for="tts">TTS 1:</label>
+							<input
+								id="checkbox1"
+								type="checkbox"
+								class="tts-checkbox"
+								style="text-align: left"
+								value="tts"
+								name="tts"
+								checked
+							/>
+						</form>
+						<br /><br />
+						<form id="choose1" class="choose-box" method="POST" action="#">
+							<label for="tts">Choose User:</label>
+							<input type="text" class="choose" />
+						</form>
+						<br /><br />
+						<select id="voicename1">
+							<option value="en-US-DavisNeural">Davis</option>
+							<option value="en-US-TonyNeural">Tony</option>
+							<option value="en-US-JasonNeural">Jason</option>
+							<option value="en-US-GuyNeural">Guy</option>
+							<option value="en-US-JaneNeural">Jane</option>
+							<option value="en-US-NancyNeural">Nancy</option>
+							<option value="en-US-JennyNeural">Jenny</option>
+							<option value="en-US-AriaNeural">Aria</option>
+						</select>
+						<select id="voicestyle1">
+							<option value="random">random</option>
+							<option value="angry">angry</option>
+							<option value="cheerful">cheerful</option>
+							<option value="excited">excited</option>
+							<option value="hopeful">hopeful</option>
+							<option value="sad">sad</option>
+							<option value="shouting">shouting</option>
+							<option value="terrified">terrified</option>
+							<option value="unfriendly">unfriendly</option>
+							<option value="whispering">whispering</option>
+						</select>
+					</div>
+					<br /><br />
+					<div class="avatar-container" id="avatar-container-1">
+						<!-- <img
+							src="{{ url_for('static', filename='images/avatar1.svg') }}"
+							alt="Player 1 Avatar"
+							class="avatar"
+							id="avatar-1"
+						/> -->
+						<img
+							src="../static/images/avatar1.svg"
+							alt="Player 1 Avatar"
+							class="avatar"
+							id="avatar-1"
+						/>
+					</div>
+					<div class="user-name-box" id="user-name-box-1">
+						<span class="user-name" id="user-name-1">Temp User</span>
+					</div>
+					<div class="user-message-box" id="user-message-box-1">
+						<span class="user-message" id="user-message-1">Temp message</span>
+					</div>
+
+					<!-- Speech visualizer for player 1 -->
+					<div class="speech-visualizer" id="speech-visualizer-1"></div>
+				</div>
+
+				<div class="player-container">
+					<div class="player-controls">
+						<form id="pickrandom2" method="POST" action="#">
+							<input
+								type="submit"
+								value="Pick Random"
+								id="pick-random-input"
+								style="border-color: #ccc; border-radius: 10px"
+							/>
+						</form>
+						<form id="tts2" method="POST" action="#">
+							<label for="tts">TTS 2:</label>
+							<input
+								id="checkbox2"
+								type="checkbox"
+								class="tts-checkbox"
+								style="text-align: left"
+								value="tts"
+								name="tts"
+								checked
+							/>
+						</form>
+						<br /><br />
+						<form id="choose2" class="choose-box" method="POST" action="#">
+							<label for="tts">Choose User:</label>
+							<input type="text" class="choose" />
+						</form>
+						<br /><br />
+						<select id="voicename2">
+							<option value="en-US-DavisNeural">Davis</option>
+							<option value="en-US-TonyNeural">Tony</option>
+							<option value="en-US-JasonNeural">Jason</option>
+							<option value="en-US-GuyNeural">Guy</option>
+							<option value="en-US-JaneNeural">Jane</option>
+							<option value="en-US-NancyNeural">Nancy</option>
+							<option value="en-US-JennyNeural">Jenny</option>
+							<option value="en-US-AriaNeural">Aria</option>
+						</select>
+						<select id="voicestyle2">
+							<option value="random">random</option>
+							<option value="angry">angry</option>
+							<option value="cheerful">cheerful</option>
+							<option value="excited">excited</option>
+							<option value="hopeful">hopeful</option>
+							<option value="sad">sad</option>
+							<option value="shouting">shouting</option>
+							<option value="terrified">terrified</option>
+							<option value="unfriendly">unfriendly</option>
+							<option value="whispering">whispering</option>
+						</select>
+					</div>
+					<div class="avatar-container" id="avatar-container-2">
+						<!-- <img
+							src="{{ url_for('static', filename='images/avatar2.svg') }}"
+							alt="Player 2 Avatar"
+							class="avatar"
+							id="avatar-2"
+						/> -->
+						<img
+							src="../static/images/avatar2.svg"
+							alt="Player 2 Avatar"
+							class="avatar"
+							id="avatar-2"
+						/>
+					</div>
+					<br /><br />
+					<div class="user-name-box" id="user-name-box-2">
+						<span class="user-name" id="user-name-2">Temp User</span>
+					</div>
+					<div class="user-message-box" id="user-message-box-2">
+						<span class="user-message" id="user-message-2">Temp message</span>
+					</div>
+
+					<!-- Speech visualizer for player 2 -->
+					<div class="speech-visualizer" id="speech-visualizer-2"></div>
+				</div>
+
+				<div class="player-container">
+					<div class="player-controls">
+						<form id="pickrandom3" method="POST" action="#">
+							<input
+								type="submit"
+								value="Pick Random"
+								id="pick-random-input"
+								style="border-color: #ccc; border-radius: 10px"
+							/>
+						</form>
+						<form id="tts3" method="POST" action="#">
+							<label for="tts">TTS 3:</label>
+							<input
+								id="checkbox3"
+								type="checkbox"
+								class="tts-checkbox"
+								style="text-align: left"
+								value="tts"
+								name="tts"
+								checked
+							/>
+						</form>
+						<br /><br />
+						<form id="choose3" class="choose-box" method="POST" action="#">
+							<label for="tts">Choose User:</label>
+							<input type="text" class="choose" />
+						</form>
+						<br /><br />
+						<select id="voicename3">
+							<option value="en-US-DavisNeural">Davis</option>
+							<option value="en-US-TonyNeural">Tony</option>
+							<option value="en-US-JasonNeural">Jason</option>
+							<option value="en-US-GuyNeural">Guy</option>
+							<option value="en-US-JaneNeural">Jane</option>
+							<option value="en-US-NancyNeural">Nancy</option>
+							<option value="en-US-JennyNeural">Jenny</option>
+							<option value="en-US-AriaNeural">Aria</option>
+						</select>
+						<select id="voicestyle3">
+							<option value="random">random</option>
+							<option value="angry">angry</option>
+							<option value="cheerful">cheerful</option>
+							<option value="excited">excited</option>
+							<option value="hopeful">hopeful</option>
+							<option value="sad">sad</option>
+							<option value="shouting">shouting</option>
+							<option value="terrified">terrified</option>
+							<option value="unfriendly">unfriendly</option>
+							<option value="whispering">whispering</option>
+						</select>
+					</div>
+					<div class="avatar-container" id="avatar-container-3">
+						<!-- <img
+							src="{{ url_for('static', filename='images/avatar3.svg') }}"
+							alt="Player 3 Avatar"
+							class="avatar"
+							id="avatar-3"
+						/> -->
+						<img
+							src="../static/images/avatar3.svg"
+							alt="Player 3 Avatar"
+							class="avatar"
+							id="avatar-3"
+						/>
+					</div>
+					<br /><br />
+					<div class="user-name-box" id="user-name-box-3">
+						<span class="user-name" id="user-name-3">Temp User</span>
+					</div>
+					<div class="user-message-box" id="user-message-box-3">
+						<span class="user-message" id="user-message-3">Temp message</span>
+					</div>
+
+					<!-- Speech visualizer for player 3 -->
+					<div class="speech-visualizer" id="speech-visualizer-3"></div>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>

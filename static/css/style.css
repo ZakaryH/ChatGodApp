@@ -1,64 +1,167 @@
 /* Applies to all elements */
 * {
-    font-family: 'Roboto', sans-serif;
-    background-color: hsl(250, 24%, 19%);
-    color: #ccc;
-/*    color: #fff;*/
-    scrollbar-width: none; /*firefox support */    
+	font-family: "Roboto", sans-serif;
+	scrollbar-width: none; /*firefox support */
+}
+
+body {
+	color: #eee;
+	background-color: #29d;
+}
+.container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.main-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	width: 100%;
+}
+
+.toggle-container {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+}
+
+h1 {
+	margin-bottom: 3em;
 }
 
 /* Applies to all form elements */
-form{
-    padding: 5px;
-    margin-top: 0px;
-    margin-left: -5px;
-    margin-right: 10px;
-    margin-bottom: 5px;
-    float: left;
+form {
+	padding: 5px;
+	margin-top: 0px;
+	margin-left: -5px;
+	margin-right: 10px;
+	margin-bottom: 5px;
+	float: left;
 }
 
 .choose-box {
-    text-align: left;
-    display: block;
-    margin:left;
+	text-align: left;
+	display: block;
+	margin: left;
 }
 
 /* Applies to all user-name-box class elements */
 .user-name-box {
-    /* Three Team */
-    width: 240px;
-    height: 40;
-    padding: 0px;
+	/* Three Team */
+	width: 240px;
+	height: 40;
+	padding: 0px;
 
-    color: #79f1ff;
-    text-align: center;
+	color: #79f1ff;
+	text-align: center;
 }
 
 /* Applies to all user-name class elements */
 .user-name {
-    /* Three Team Size */
-    font-size: 35px;
-    color: rgb(256,256,256);
-    text-shadow: -3px 0 black, 0 3px black, 3px 0 black, 0 -3px black;
+	/* Three Team Size */
+	font-size: 35px;
+	color: rgb(256, 256, 256);
+	text-shadow: -3px 0 black, 0 3px black, 3px 0 black, 0 -3px black;
 }
 
 /* Applies to all user-message-box class elements */
 .user-message-box {
-    /* Three Teams */
-    width: 240px;
-    height: 85px;
-    padding: 0px;
-    margin-top: -6px;
+	/* Three Teams */
+	width: 240px;
+	height: 85px;
+	padding: 0px;
+	margin-top: -6px;
 
-    text-align: center;
-    text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+	text-align: center;
+	text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
 }
 
 /* Applies to all user-message class elements */
 .user-message {
-    /* Three Teams */
-    font-size: 15px;
-    color: #79f1ff;
-    padding: -5px;
-    background-color: transparent;
+	/* Three Teams */
+	font-size: 1em;
+	color: #79f1ff;
+	background-color: transparent;
+}
+
+/* Avatar styling */
+.avatar-container {
+	position: relative;
+	width: 120px;
+	height: 120px;
+	margin: 0 auto 15px auto;
+	border-radius: 50%;
+	overflow: hidden;
+	border: 3px solid #79f1ff;
+	box-shadow: 0 0 15px rgba(121, 241, 255, 0.6);
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.avatar {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.3s ease;
+}
+
+/* Animation classes for new messages */
+.avatar-animate {
+	animation: pulse 0.7s ease-in-out;
+}
+
+@keyframes pulse {
+	0% {
+		transform: scale(1);
+		box-shadow: 0 0 15px rgba(121, 241, 255, 0.6);
+	}
+	50% {
+		transform: scale(1.1);
+		box-shadow: 0 0 25px rgba(121, 241, 255, 0.8);
+	}
+	100% {
+		transform: scale(1);
+		box-shadow: 0 0 15px rgba(121, 241, 255, 0.6);
+	}
+}
+
+/* Adding a container for player information */
+.player-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20px;
+	margin: 10px;
+	border-radius: 15px;
+	min-height: 513px;
+}
+
+.player-controls {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+.speech-visualizer {
+	display: none;
+	justify-content: center;
+	align-items: flex-end;
+	height: 25px;
+	width: 80%;
+	margin: 5px auto;
+	border-radius: 12px;
+	padding: 5px;
+	overflow: hidden;
+}
+
+.speech-bar {
+	width: 3px;
+	height: 5px;
+	margin: 0 2px;
+	border-radius: 3px;
+	background-color: #79f1ff;
+	transition: height 0.1s ease;
 }
