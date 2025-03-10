@@ -426,36 +426,6 @@
 				}
 			});
 
-			// CSS for speech visualization
-			document.head.insertAdjacentHTML(
-				"beforeend",
-				`
-				<style>
-					.speech-visualizer {
-						display: none;
-						justify-content: center;
-						align-items: flex-end;
-						height: 25px;
-						width: 80%;
-						margin: 5px auto;
-						background-color: rgba(0, 0, 0, 0.2);
-						border-radius: 12px;
-						padding: 5px;
-						overflow: hidden;
-					}
-					
-					.speech-bar {
-						width: 3px;
-						height: 5px;
-						margin: 0 2px;
-						border-radius: 3px;
-						background-color: #79f1ff;
-						transition: height 0.1s ease;
-					}
-				</style>
-			`
-			);
-
 			function changeTheme(theme) {
 				if (theme === "default") {
 					document.body.style.backgroundColor = "#29d";
@@ -1314,20 +1284,6 @@
 
 			<div class="main-container">
 				<div class="player-container">
-					<div class="avatar-container" id="avatar-container-1">
-						<!-- <img
-							src="{{ url_for('static', filename='images/avatar1.svg') }}"
-							alt="Player 1 Avatar"
-							class="avatar"
-							id="avatar-1"
-						/> -->
-						<img
-							src="../static/images/avatar1.svg"
-							alt="Player 1 Avatar"
-							class="avatar"
-							id="avatar-1"
-						/>
-					</div>
 					<div class="player-controls">
 						<form id="pickrandom1" method="POST" action="#">
 							<input
@@ -1379,6 +1335,20 @@
 						</select>
 					</div>
 					<br /><br />
+					<div class="avatar-container" id="avatar-container-1">
+						<!-- <img
+							src="{{ url_for('static', filename='images/avatar1.svg') }}"
+							alt="Player 1 Avatar"
+							class="avatar"
+							id="avatar-1"
+						/> -->
+						<img
+							src="../static/images/avatar1.svg"
+							alt="Player 1 Avatar"
+							class="avatar"
+							id="avatar-1"
+						/>
+					</div>
 					<div class="user-name-box" id="user-name-box-1">
 						<span class="user-name" id="user-name-1">Temp User</span>
 					</div>
@@ -1391,20 +1361,6 @@
 				</div>
 
 				<div class="player-container">
-					<div class="avatar-container" id="avatar-container-2">
-						<!-- <img
-							src="{{ url_for('static', filename='images/avatar2.svg') }}"
-							alt="Player 2 Avatar"
-							class="avatar"
-							id="avatar-2"
-						/> -->
-						<img
-							src="../static/images/avatar2.svg"
-							alt="Player 2 Avatar"
-							class="avatar"
-							id="avatar-2"
-						/>
-					</div>
 					<div class="player-controls">
 						<form id="pickrandom2" method="POST" action="#">
 							<input
@@ -1455,6 +1411,20 @@
 							<option value="whispering">whispering</option>
 						</select>
 					</div>
+					<div class="avatar-container" id="avatar-container-2">
+						<!-- <img
+							src="{{ url_for('static', filename='images/avatar2.svg') }}"
+							alt="Player 2 Avatar"
+							class="avatar"
+							id="avatar-2"
+						/> -->
+						<img
+							src="../static/images/avatar2.svg"
+							alt="Player 2 Avatar"
+							class="avatar"
+							id="avatar-2"
+						/>
+					</div>
 					<br /><br />
 					<div class="user-name-box" id="user-name-box-2">
 						<span class="user-name" id="user-name-2">Temp User</span>
@@ -1468,20 +1438,6 @@
 				</div>
 
 				<div class="player-container">
-					<div class="avatar-container" id="avatar-container-3">
-						<!-- <img
-							src="{{ url_for('static', filename='images/avatar3.svg') }}"
-							alt="Player 3 Avatar"
-							class="avatar"
-							id="avatar-3"
-						/> -->
-						<img
-							src="../static/images/avatar3.svg"
-							alt="Player 3 Avatar"
-							class="avatar"
-							id="avatar-3"
-						/>
-					</div>
 					<div class="player-controls">
 						<form id="pickrandom3" method="POST" action="#">
 							<input
@@ -1531,6 +1487,20 @@
 							<option value="unfriendly">unfriendly</option>
 							<option value="whispering">whispering</option>
 						</select>
+					</div>
+					<div class="avatar-container" id="avatar-container-3">
+						<!-- <img
+							src="{{ url_for('static', filename='images/avatar3.svg') }}"
+							alt="Player 3 Avatar"
+							class="avatar"
+							id="avatar-3"
+						/> -->
+						<img
+							src="../static/images/avatar3.svg"
+							alt="Player 3 Avatar"
+							class="avatar"
+							id="avatar-3"
+						/>
 					</div>
 					<br /><br />
 					<div class="user-name-box" id="user-name-box-3">
